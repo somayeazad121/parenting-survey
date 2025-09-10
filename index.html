@@ -2,43 +2,59 @@
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
-<title>پرسشنامه سبک فرزندپروری مبتنی بر تئوری انتخاب</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<title>پرسشنامه سبک فرزندپروری</title>
 <style>
-body { font-family: Tahoma, sans-serif; direction: rtl; padding: 20px; background: #f4f4f4; }
+body {
+    font-family: Tahoma, sans-serif;
+    background-color: #f5f5f5;
+    direction: rtl;
+    padding: 20px;
+}
+.container {
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    max-width: 900px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
 h1 { text-align: center; }
-form { background: #fff; padding: 20px; border-radius: 10px; }
 .question { margin-bottom: 15px; }
-label { margin-right: 10px; }
-button { margin-top: 20px; padding: 10px 15px; }
-.result { background: #e0ffe0; padding: 15px; margin-top: 20px; border-radius: 10px; }
+label { display: block; margin-bottom: 5px; }
+input[type=text], select { width: 100%; padding: 8px; margin-bottom: 10px; }
+button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin-top:10px;}
+.result { margin-top: 20px; padding: 15px; background-color: #e2f0d9; border-radius: 8px; }
 </style>
 </head>
 <body>
+<div class="container">
+<h1>پرسشنامه سنجش سبک فرزندپروری مبتنی بر تئوری انتخاب</h1>
+<p>لطفاً مشخصات خود را وارد کرده و برای هر سؤال یکی از گزینه‌ها را انتخاب نمایید.</p>
 
-<h1>پرسشنامه سبک فرزندپروری مبتنی بر تئوری انتخاب</h1>
 <form id="surveyForm">
-  <p>لطفاً مشخصات را وارد کنید و برای هر سؤال یکی از گزینه‌ها را انتخاب نمایید.</p>
-  <label>نام: <input type="text" id="name" required></label><br>
-  <label>جنسیت: 
-    <input type="radio" name="gender" value="زن" required> زن
-    <input type="radio" name="gender" value="مرد"> مرد
-  </label><br>
-  <label>سن: <input type="number" id="age" required></label><br>
-  <label>تحصیلات: <input type="text" id="edu" required></label><br><br>
+<label>نام:</label>
+<input type="text" name="name" required>
 
-  <div id="questions"></div>
+<label>جنسیت:</label>
+<input type="radio" name="gender" value="زن" required> زن
+<input type="radio" name="gender" value="مرد" required> مرد
 
-  <button type="submit">ارسال و مشاهده نتیجه</button>
+<label>سن:</label>
+<input type="text" name="age" required>
+
+<label>تحصیلات:</label>
+<input type="text" name="education" required>
+
+<hr>
+<div id="questions"></div>
+<button type="submit">ارسال و مشاهده نتیجه</button>
 </form>
 
-<div class="result" id="resultDiv" style="display:none;"></div>
-<button id="downloadPdfBtn" style="display:none;">دانلود PDF نتیجه</button>
+<div class="result" id="result" style="display:none;"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-const webAppUrl = "https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec";
-
-// ۴۰ سوال
+// ========================= سوالات =========================
 const questions = [
 "در صورت بروز رفتار اشتباهی از فرزندم به او اطمینان می دهم که جدای از رفتارش او برای من ارزشمند است.",
 "به فرزندم در مسائل شخصی اش مثل روابط اجتماعی و تحصیلی ...اعتماد دارم .",
@@ -69,7 +85,7 @@ const questions = [
 "اگر وضع ظاهری و پوشش فرزندم خوشایند من نباشد ، از او انتقاد می کنم .",
 "وقتی به فرزندم ابراز علاقه و محبت می کنم که او مطابق میل من عمل کند.",
 "اجازه می دهم تا فرزندم در قوانین و مقررات خانواده دخالت کند و نظر دهد.",
-"وقتی فرزندم از دوستانش برایم تعریف می کند حتی اگر دوستانش مورد تایید من نباشند همچنان با توجه به حرفهایش گوش می دهم .",
+"وقتی فرزندم از دوستانش برایم تعریف می کند حتی اگر  دوستانش مورد تایید من نباشند همچنان با توجه به حرفهایش گوش می دهم .",
 "فرزندم را مرتب بابت اشتباهاتش سرزنش می کنم .",
 "اوقات گرم و صمیمی ای با فرزندم دارم.",
 "در مشکلاتی که با فرزندم دارم ، سعی می کنم برای حل مشکل در وقت مناسب با او به گفتگو بپردازم .",
@@ -82,89 +98,121 @@ const questions = [
 "برای تنبیه فرزندم اجازه نمی دهم کار مورد علاقه اش را انجام دهد یا از وسایل مورد علاقه اش استفاده کند."
 ];
 
-const options = ["هرگز","به ندرت","گاهی اوقات","اغلب اوقات","همیشه"];
-const optionValues = [0,1,2,3,4]; // نمره گذاری
+const options = ["همیشه", "اغلب اوقات", "گاهی اوقات", "به ندرت", "هرگز"];
+const scores = [4,3,2,1,0];
 
-// خرده مقیاس ها
-const subscales = {
-  "حمایت کردن": [0,3,16], // q1,q4,q17 (index -1)
-  "دلگرمی دادن": [9,11,17,31],
-  "گوش دادن": [22,29],
-  "پذیرفتن": [5,10,28,33],
-  "اعتماد کردن": [1],
-  "احترام گذاشتن": [20,23],
-  "گفتگوکردن": [6,19,24,37],
-  "انتقاد کردن": [12,25,26,35],
-  "سرزنش کردن": [21,30],
-  "شکایت و گلایه کردن": [2,13,15],
-  "غر و نق زدن": [18,34,36],
-  "تهدیدکردن": [7,14,38],
-  "تنبیه کردن": [39],
-  "مهارکردن از راه رشوه دادن": [4,8,27]
-};
-
-function createQuestions(){
-  const qDiv = document.getElementById("questions");
-  questions.forEach((q,i)=>{
-    const div = document.createElement("div");
-    div.className="question";
-    div.innerHTML=`<p>${i+1}. ${q}</p>`;
+// ========================= تولید فرم سوالات =========================
+const container = document.getElementById("questions");
+questions.forEach((q,i)=>{
+    let div = document.createElement("div");
+    div.className = "question";
+    let html = `<label>${i+1}. ${q}</label>`;
     options.forEach((opt,j)=>{
-      div.innerHTML += `<label><input type="radio" name="q${i+1}" value="${optionValues[j]}" required> ${opt}</label>`;
+        html += `<input type="radio" name="q${i+1}" value="${scores[j]}" required> ${opt} `;
     });
-    qDiv.appendChild(div);
-  });
-}
-createQuestions();
+    div.innerHTML = html;
+    container.appendChild(div);
+});
 
-document.getElementById("surveyForm").addEventListener("submit", function(e){
-  e.preventDefault();
+// ========================= ارسال فرم =========================
+const form = document.getElementById("surveyForm");
+form.addEventListener("submit", function(e){
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value,key)=>{ data[key]=value; });
 
-  const formData = {};
-  formData.name = document.getElementById("name").value;
-  formData.gender = document.querySelector('input[name="gender"]:checked')?.value;
-  formData.age = document.getElementById("age").value;
-  formData.edu = document.getElementById("edu").value;
+    // ارسال به Web App
+    fetch("https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(res=>res.json())
+    .then(res=>{
+        // محاسبه نمرات خرده مقیاس‌ها
+        const constructive = {
+            Supporting: [1,4,17],
+            Encouraging: [10,12,18,32],
+            Listening: [23,30,8],
+            Accepting: [6,11,29,34],
+            Trusting: [2],
+            Respecting: [21,24],
+            Negotiating: [7,20,25,33,38]
+        };
+        const destructive = {
+            Criticizing: [13,26,27,36],
+            Blaming: [22,31],
+            Complaining: [3,14,16],
+            Nagging: [19,35,37],
+            Threatening: [8,15,39],
+            Punishing: [40],
+            Bribing: [5,9,28]
+        };
 
-  for(let i=1;i<=40;i++){
-    formData[`q${i}`] = parseInt(document.querySelector(`input[name="q${i}"]:checked`)?.value);
-  }
+        function calcScores(mapping){
+            let scoresObj = {};
+            let total=0;
+            for(const [k,arr] of Object.entries(mapping)){
+                let sum=0;
+                arr.forEach(idx=>{
+                    let val = parseInt(data[`q${idx}`]);
+                    sum += val;
+                });
+                scoresObj[k]={score: sum, max: arr.length*4, percent: Math.round(sum/(arr.length*4)*100)};
+                total += sum;
+            }
+            return {scoresObj,total};
+        }
 
-  // محاسبه نمرات خرده مقیاس ها
-  const results = {};
-  for(const [sub, arr] of Object.entries(subscales)){
-    let sum = 0;
-    arr.forEach(idx=>{
-      sum += formData[`q${idx+1}`] || 0;
-    });
-    results[sub] = sum;
-  }
+        const cons = calcScores(constructive);
+        const des = calcScores(destructive);
 
-  // سبک سازنده و مخرب
-  const constructiveSubs = ["حمایت کردن","دلگرمی دادن","گوش دادن","پذیرفتن","اعتماد کردن","احترام گذاشتن","گفتگوکردن"];
-  const destructiveSubs = ["انتقاد کردن","سرزنش کردن","شکایت و گلایه کردن","غر و نق زدن","تهدیدکردن","تنبیه کردن","مهارکردن از راه رشوه دادن"];
+        let resultHtml = "<h3>نتایج شما:</h3>";
 
-  const constructiveScore = constructiveSubs.reduce((a,b)=>a+results[b],0);
-  const destructiveScore = destructiveSubs.reduce((a,b)=>a+results[b],0);
+        // سبک سازنده
+        resultHtml += "<h4>سبک سازنده:</h4><ul>";
+        for(const [k,v] of Object.entries(cons.scoresObj)){
+            resultHtml += `<li>${k}: ${v.score} از ${v.max} (${v.percent}%)</li>`;
+        }
+        let consTotalPercent = Math.round(cons.total/84*100);
+        resultHtml += `</ul><p>مجموع سبک سازنده: ${cons.total} از 84 (${consTotalPercent}%)</p>`;
 
-  const constructivePercent = Math.round(constructiveScore/84*100);
-  const destructivePercent = Math.round(destructiveScore/76*100);
+        // سبک مخرب
+        resultHtml += "<h4>سبک مخرب:</h4><ul>";
+        for(const [k,v] of Object.entries(des.scoresObj)){
+            resultHtml += `<li>${k}: ${v.score} از ${v.max} (${v.percent}%)</li>`;
+        }
+        let desTotalPercent = Math.round(des.total/76*100);
+        resultHtml += `</ul><p>مجموع سبک مخرب: ${des.total} از 76 (${desTotalPercent}%)</p>`;
 
-  // نمایش نتیجه
-  let resultHtml = `<h3>نتیجه شما</h3>`;
-  resultHtml += `<p>سبک سازنده: ${constructiveScore} از 84 (${constructivePercent}%)</p>`;
-  resultHtml += `<ul>`;
-  constructiveSubs.forEach(sub=>{
-    resultHtml += `<li>${sub}: ${results[sub]}</li>`;
-  });
-  resultHtml += `</ul>`;
-  resultHtml += `<p>سبک مخرب: ${destructiveScore} از 76 (${destructivePercent}%)</p>`;
-  resultHtml += `<ul>`;
-  destructiveSubs.forEach(sub=>{
-    resultHtml += `<li>${sub}: ${results[sub]}</li>`;
-  });
-  resultHtml += `</ul>`;
+        resultHtml += `<button id="downloadPDF">دانلود PDF</button>`;
+        document.getElementById("result").innerHTML = resultHtml;
+        document.getElementById("result").style.display = "block";
 
-  document.getElementById("resultDiv").innerHTML=resultHtml;
-  document.getElementById("resultDiv").style.display="block";
-  document.getElementById
+        // ========================= دانلود PDF =========================
+        document.getElementById("downloadPDF").addEventListener("click", ()=>{
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({orientation:"p",unit:"pt",format:"a4"});
+            doc.setFontSize(12);
+            doc.text("نتایج پرسشنامه سبک فرزندپروری", 40, 40);
+            let y=60;
+            for(const [k,v] of Object.entries(cons.scoresObj)){
+                doc.text(`${k}: ${v.score} از ${v.max} (${v.percent}%)`,40,y);
+                y+=20;
+            }
+            doc.text(`مجموع سبک سازنده: ${cons.total} از 84 (${consTotalPercent}%)`,40,y); y+=30;
+            for(const [k,v] of Object.entries(des.scoresObj)){
+                doc.text(`${k}: ${v.score} از ${v.max} (${v.percent}%)`,40,y); y+=20;
+            }
+            doc.text(`مجموع سبک مخرب: ${des.total} از 76 (${desTotalPercent}%)`,40,y);
+            doc.save("نتایج_پرسشنامه.pdf");
+        });
+
+    })
+    .catch(err=>{ alert("خطا در ارسال داده‌ها: "+err); });
+});
+</script>
+</div>
+</body>
+</html>
