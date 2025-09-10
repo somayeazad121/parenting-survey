@@ -60,16 +60,10 @@
 </div>
 
 <script>
-/* ====== تنظیم: آدرس Web App گوگل (Apps Script) را اینجا جایگزین کنید ======
-   نحوه گرفتن Web App: در Google Apps Script > Deploy > New deployment > Web app
-   Execute as: Me
-   Who has access: Anyone
-   سپس URL را اینجا قرار دهید.
-*/
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec
-";
+/* ===== WEB APP URL که شما فرستادید ===== */
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec";
 
-/* ====== متن دقیق 40 سوال (از پرسشنامه شما) ====== */
+/* ===== متن کامل 40 سوال ===== */
 const questions = [
 "در صورت بروز رفتار اشتباهی از فرزندم به او اطمینان می دهم که جدای از رفتارش او برای من ارزشمند است.",
 "به فرزندم در مسائل شخصی اش مثل روابط اجتماعی و تحصیلی ...اعتماد دارم.",
@@ -113,13 +107,13 @@ const questions = [
 "برای تنبیه فرزندم اجازه نمی دهم کار مورد علاقه اش را انجام دهد یا از وسایل مورد علاقه اش استفاده کند."
 ];
 
-/* ====== خرده‌مقیاس‌ها (شماره سوال‌ها مطابق پرسشنامه شما) ====== */
+/* ===== خرده‌مقیاس‌ها مطابق تعریف شما ====== */
 const subscales = {
   "حمایت کردن": [1,4,17],
   "دلگرمی دادن": [10,12,18,32],
   "گوش دادن": [23,30],
   "پذیرفتن": [6,11,29,34],
-  "اعتماد کردن": [2],               // در فایل شما اعتماد فقط Q2 (حداکثر 4)
+  "اعتماد کردن": [2],
   "احترام گذاشتن": [21,24],
   "گفتگوکردن": [7,20,25,33,38],
   "انتقاد کردن": [13,26,27,36],
@@ -131,7 +125,7 @@ const subscales = {
   "مهار کردن از راه رشوه دادن": [5,9,28]
 };
 
-/* ====== ایجاد نمای سوالات در DOM ====== */
+/* ===== ایجاد سوالات در صفحه ===== */
 const qArea = document.getElementById('questionsArea');
 questions.forEach((txt, idx) => {
   const qNum = idx + 1;
@@ -149,25 +143,17 @@ questions.forEach((txt, idx) => {
   qArea.appendChild(div);
 });
 
-/* ====== کمک: محاسبه و تفسیر سطوح ====== */
-function interpretScore(subName, sum) {
-  const count = subscales[subName].length;
-  const max = count * 4; // چون مقیاس 0..4 اما در پرسشنامه شما 4..0: ما از 0 تا 4 استفاده کرده‌ایم (همیشه=4)
-  // تفسیر درصدی:
+/* ===== توابع کمکی ===== */
+function interpretScore(sum, count) {
+  const max = count * 4;
   const pct = (sum / max) * 100;
-  if (pct <= 33) return {label:"پایین", pct};
-  if (pct <= 66) return {label:"متوسط", pct};
-  return {label:"بالا", pct};
+  if (pct <= 33) return {label:"پایین", pct: Math.round(pct)};
+  if (pct <= 66) return {label:"متوسط", pct: Math.round(pct)};
+  return {label:"بالا", pct: Math.round(pct)};
 }
 
-/* ====== ارسال داده به Web App (Google Apps Script) ====== */
 async function postToSheet(payload) {
-  if (!WEB_APP_URL || WEB_APP_URL === "https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec
-") {
-    throw new Error("آدرس وب‌اپ Google Sheets در کد تعیین نشده است. لطفاً WEB_APP_URL را جایگزین کنید.");
-  }
-  const res = await fetch(https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec
-, {
+  const res = await fetch(WEB_APP_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
@@ -176,10 +162,11 @@ async function postToSheet(payload) {
     const txt = await res.text();
     throw new Error("ارسال به شیت موفق نبود: " + txt);
   }
-  return res.json().catch(()=>({status:"ok"}));
+  // Apps Script معمولا JSON برمی‌گرداند یا خالی؛ ما فقط OK را چک می‌کنیم
+  try { return await res.json(); } catch(e){ return {status:"ok"} }
 }
 
-/* ====== رویداد ارسال فرم ====== */
+/* ===== ارسال فرم و محاسبه نتایج ===== */
 const form = document.getElementById('surveyForm');
 const submitBtn = document.getElementById('submitBtn');
 const statusMsg = document.getElementById('statusMsg');
@@ -193,7 +180,6 @@ form.addEventListener('submit', async function(e){
   submitBtn.textContent = "در حال ارسال ...";
 
   try {
-    // خواندن داده‌ها
     const fd = new FormData(form);
     const payload = {
       name: (fd.get('name') || '').trim(),
@@ -201,17 +187,15 @@ form.addEventListener('submit', async function(e){
       age: fd.get('age') || '',
       education: (fd.get('education') || '').trim()
     };
-    // اضافه کردن پاسخ‌های Q1..Q40
     for (let i=1;i<=40;i++){
-      payload['Q'+i] = fd.get('Q'+i) !== null ? Number(fd.get('Q'+i)) : null;
+      const v = fd.get('Q'+i);
+      payload['Q'+i] = v !== null ? Number(v) : null;
     }
 
     // محاسبه خرده‌مقیاس‌ها
     const subResults = {};
-    let constructSum = 0;
-    let destructSum = 0;
-
-    // جمع سازنده: 7 بعد اول (همانطور که در تعریف)
+    let constructiveSum = 0;
+    let destructiveSum = 0;
     const constructiveKeys = ["حمایت کردن","دلگرمی دادن","گوش دادن","پذیرفتن","اعتماد کردن","احترام گذاشتن","گفتگوکردن"];
     const destructiveKeys = ["انتقاد کردن","سرزنش کردن","شکایت و گلایه کردن","غر و نق زدن","تهدیدکردن","تنبیه کردن","مهار کردن از راه رشوه دادن"];
 
@@ -222,37 +206,35 @@ form.addEventListener('submit', async function(e){
         const v = payload['Q'+n];
         s += (typeof v === 'number' && !isNaN(v)) ? v : 0;
       });
-      subResults[key] = {sum: s, max: qnums.length*4, interpret: interpretScore(key,s).label};
-      if (constructiveKeys.includes(key)) constructSum += s;
-      if (destructiveKeys.includes(key)) destructSum += s;
+      subResults[key] = {sum: s, max: qnums.length*4, interp: interpretScore(s, qnums.length).label, pct: interpretScore(s,qnums.length).pct};
+      if (constructiveKeys.includes(key)) constructiveSum += s;
+      if (destructiveKeys.includes(key)) destructiveSum += s;
     }
 
-    // جدول نتایج HTML
+    // ساخت HTML جدول نتایج
     let html = `<h3>نتایج شما</h3>
-      <table>
-        <thead><tr><th>بعد</th><th>نمره شما</th><th>بیشترین نمره</th><th>تفسیر</th></tr></thead><tbody>`;
+      <table><thead><tr><th>بعد</th><th>نمره شما</th><th>بیشترین نمره</th><th>تفسیر</th></tr></thead><tbody>`;
     for (const k of Object.keys(subResults)){
-      html += `<tr><td>${k}</td><td>${subResults[k].sum}</td><td>${subResults[k].max}</td><td>${subResults[k].interpret}</td></tr>`;
+      html += `<tr><td>${k}</td><td>${subResults[k].sum}</td><td>${subResults[k].max}</td><td>${subResults[k].interp} (${subResults[k].pct}%)</td></tr>`;
     }
     html += `</tbody></table>
       <h4 style="margin-top:12px">جمع کل</h4>
       <table><thead><tr><th>سبک</th><th>نمره شما</th></tr></thead>
       <tbody>
-        <tr><td>سبک سازنده (Constructive)</td><td>${constructSum}</td></tr>
-        <tr><td>سبک مخرب (Destructive)</td><td>${destructSum}</td></tr>
+        <tr><td>سبک سازنده (Constructive)</td><td>${constructiveSum}</td></tr>
+        <tr><td>سبک مخرب (Destructive)</td><td>${destructiveSum}</td></tr>
       </tbody></table>`;
 
     resultBox.innerHTML = html;
     resultBox.style.display = "block";
 
-    // افزون نتایج به payload برای ذخیره در شیت (اختیاری)
+    // ارسال داده‌ها به Google Sheet
     payload.subResults = subResults;
-    payload.constructiveSum = constructSum;
-    payload.destructiveSum = destructSum;
+    payload.constructiveSum = constructiveSum;
+    payload.destructiveSum = destructiveSum;
 
-    // ارسال به Google Sheet (اگر WEB_APP_URL تنظیم شده)
     try {
-      const postRes = await postToSheet(payload);
+      await postToSheet(payload);
       statusMsg.innerHTML = `<span class="success">پاسخ شما با موفقیت ذخیره شد.</span>`;
     } catch (err) {
       statusMsg.innerHTML = `<span class="error">ارسال به شیت انجام نشد: ${err.message}</span>`;
