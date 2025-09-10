@@ -1,252 +1,188 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>پرسشنامه سبک فرزندپروری (تئوری انتخاب)</title>
+<meta charset="UTF-8">
+<title>پرسشنامه سبک فرزندپروری</title>
 <style>
-  body{font-family: Tahoma, Arial, sans-serif; direction: rtl; padding:18px; background:#fbfbfb; color:#222}
-  h1{font-size:20px;margin-bottom:6px}
-  .container{max-width:980px;margin:0 auto;background:#fff;padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
-  .row{display:flex;gap:12px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
-  label.inline{margin-left:8px}
-  .question{border-bottom:1px dashed #eee;padding:10px 0}
-  .options label{margin-left:10px;font-size:14px}
-  button{background:#1e88e5;color:#fff;border:0;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:15px}
-  button[disabled]{opacity:.6;cursor:default}
-  .result{margin-top:18px;padding:14px;border-radius:8px;background:#f6f9ff;border:1px solid #d7e7ff}
-  table{width:100%;border-collapse:collapse;margin-top:10px}
-  th,td{padding:8px;border:1px solid #e8eefc;text-align:center}
-  th{background:#f0f7ff}
-  .muted{color:#666;font-size:13px}
-  .success{color:green}
-  .error{color:#b00020}
-  @media(max-width:640px){
-    .row{flex-direction:column;align-items:stretch}
-    .options label{display:block;margin:6px 0}
-  }
+body {
+    font-family: Tahoma, sans-serif;
+    background-color: #f5f5f5;
+    direction: rtl;
+    padding: 20px;
+}
+.container {
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    max-width: 900px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h1 { text-align: center; }
+.question { margin-bottom: 15px; }
+label { display: block; margin-bottom: 5px; }
+input[type=text], select { width: 100%; padding: 8px; margin-bottom: 10px; }
+button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+.result { margin-top: 20px; padding: 15px; background-color: #e2f0d9; border-radius: 8px; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>پرسشنامه سنجش سبک فرزندپروری مبتنی بر تئوری انتخاب</h1>
-  <p class="muted">لطفاً مشخصات را وارد کنید و برای هر سوال یکی از گزینه‌ها را انتخاب نمایید.</p>
+<h1>پرسشنامه سنجش سبک فرزندپروری مبتنی بر تئوری انتخاب</h1>
+<p>لطفاً مشخصات خود را وارد کرده و برای هر سؤال یکی از گزینه‌ها را انتخاب نمایید.</p>
 
-  <form id="surveyForm">
-    <div class="row">
-      <label>نام: <input type="text" name="name" required /></label>
-      <div>
-        <span class="inline">جنسیت:</span>
-        <label class="inline"><input type="radio" name="gender" value="زن" required /> زن</label>
-        <label class="inline"><input type="radio" name="gender" value="مرد" /> مرد</label>
-      </div>
-      <label>سن: <input type="number" name="age" min="0" required style="width:120px" /></label>
-      <label>تحصیلات: <input type="text" name="education" required /></label>
-    </div>
+<form id="surveyForm">
+<label>نام:</label>
+<input type="text" name="name" required>
 
-    <hr />
+<label>جنسیت:</label>
+<input type="radio" name="gender" value="زن" required> زن
+<input type="radio" name="gender" value="مرد" required> مرد
 
-    <div id="questionsArea"></div>
+<label>سن:</label>
+<input type="text" name="age" required>
 
-    <div style="margin-top:12px">
-      <button type="submit" id="submitBtn">ارسال و مشاهده نتیجه</button>
-      <span id="statusMsg" style="margin-left:12px"></span>
-    </div>
-  </form>
+<label>تحصیلات:</label>
+<input type="text" name="education" required>
 
-  <div id="resultBox" class="result" style="display:none"></div>
+<hr>
 
-  <p class="muted" style="margin-top:10px">توجه: پاسخ‌ها به صورت امن در Google Sheet ذخیره می‌شوند و شما می‌توانید پرونده‌های پاسخ‌دهندگان را بعداً مشاهده کنید.</p>
-</div>
+<div id="questions"></div>
+
+<button type="submit">ارسال و مشاهده نتیجه</button>
+</form>
+
+<div class="result" id="result" style="display:none;"></div>
 
 <script>
-/* ===== WEB APP URL که شما فرستادید ===== */
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec";
-
-/* ===== متن کامل 40 سوال ===== */
+// ========================= سوالات =========================
 const questions = [
 "در صورت بروز رفتار اشتباهی از فرزندم به او اطمینان می دهم که جدای از رفتارش او برای من ارزشمند است.",
-"به فرزندم در مسائل شخصی اش مثل روابط اجتماعی و تحصیلی ...اعتماد دارم.",
-"وقتی فرزندم را با فرزند دیگران مقایسه می کنم و احساس می کنم به خوبی فرزندان دیگران نیست ، این احساسات را به فرزندم منتقل می کنم.",
-"وقتی فرزندم در کاری شکست می خورد ، سعی می کنم او را آرام کنم.",
+"به فرزندم در مسائل شخصی اش مثل روابط اجتماعی و تحصیلی ...اعتماد دارم .",
+"وقتی فرزندم را با فرزند دیگران مقایسه می کنم و احساس می کنم به خوبی فرزندان دیگران نیست ، این احساسات را به فرزندم منتقل می کنم .",
+"وقتی فرزندم در کاری شکست می خورد ، سعی می کنم او را آرام کنم .",
 "در شرایطی که فرزندم خواسته ی مطلوبم را انجام دهد ، به او بیشتر محبت یا توجه می کنم",
-"هنگامی که فرزندم در مسائلی نظر متفاوتی از نظر من دارد، با کمال آرامش به نظرات او توجه می کنم.",
+"هنگامی که فرزندم در مسائلی نظر متفاوتی از نظر من دارد، با کمال آرامش به نظرات او توجه می کنم .",
 "به فرزندم توضیح می دهم که چرا باید از قوانین پیروی کند.",
-"به فرزندم هشدار می دهم که اگر به تقاضای من عمل نکند خواسته هایش را برآورده نخواهم کرد.",
+"به فرزندم هشدار می دهم که اگر به تقاضای من عمل نکند خواسته هایش را برآورده نخواهم کرد .",
 "به فرزندم می گویم که اگر خواهان رفتارهای مطلوبی از طرف من است ، در عوض باید خواسته هایم را اجابت کند.",
 "وقتی فرزندم با احترام با دیگران برخورد می کند او را تحسین می کنم.",
-"فرزندم می تواند هنگام خرید به سلیقه خودش هر چیز را انتخاب کند.",
-"وقتی فرزندم در تکالیف و کارهایش موفق می شود او را تحسین می کنم.",
+"فرزندم می تواند هنگام خرید به سلیقه خودش هر چیز را انتخاب کند .",
+"وقتی فرزندم در تکالیف و کارهایش موفق می شود او را تحسین می کنم .",
 "اگر رابطه فرزندم با دوستانش مورد تایید من نباشد از او ایراد می گیرم.",
-"از عملکرد تحصیلی فرزندم گلایه می کنم.",
+"از عملکرد تحصیلی فرزندم گلایه می کنم .",
 "فرزندم را تهدید می کنم که اگر خواسته ام را عملی نکند ، پیامدهای بدی متوجه اوست.",
-"نارضایتی از شخصیت فرزندم را برایش بازگو می کنم.",
+"نارضایتی از شخصیت فرزندم را برایش بازگو می کنم .",
 "حتی وقتی مخالف خواسته یا کار فرزندم هستم او را تشویق می کنم تا حرفش را بزند.",
-"سعی می کنم کوچکترین رفتارهای مثبت فرزندم را تحسین کنم.",
+"سعی می کنم کوچکترین رفتارهای مثبت فرزندم را تحسین کنم .",
 "به طور مرتب به فرزندم یادآوری می کنم که وظایف و تکالیفش را فراموش نکند.",
 "یکی از برنامه های طبیعی خانه ما گفتگوهای دوستانه خانوادگی است.",
-"قبل از اینکه از فرزندم بخواهم کاری انجام دهد به میل و خواسته او نیز توجه می کنم.",
-"فرزندم را بابت اینکه مانند همسالانش قادر نیست از عهده وظایفش برآید سرزش می کنم.",
-"حتی وقتی فرزندم صحبتهایی که می کند به نظرم ارزش چندانی ندارد با این حال به صحبتهایش توجه می کنم.",
-"زمانی که فرزندم با من اختلاف نظر دارد با احترام با او برخورد می کنم.",
-"به فرزندم می گویم که در مورد کارهای خوب یا بد او چگونه فکر می کنم و چه احساسی دارم.",
+"قبل از اینکه از فرزندم بخواهم کاری انجام دهد به میل و خواسته او نیز توجه می کنم .",
+"فرزندم را بابت اینکه مانند همسالانش قادر نیست از عهده وظایفش برآید سرزش می کنم .",
+"حتی وقتی فرزندم صحبتهایی که می کند به نظرم ارزش چندانی ندارد با این حال به صحبتهایش توجه می کنم .",
+"زمانی که فرزندم با من اختلاف نظر دارد با احترام با او برخورد می کنم .",
+"به فرزندم می گویم که در مورد کارهای خوب یا بد او چگونه فکر می کنم و چه احساسی دارم .",
 "اگر نحوه رفتار فرزندم خوشایندم نباشد از او انتقاد می کنم.",
-"اگر وضع ظاهری و پوشش فرزندم خوشایند من نباشد ، از او انتقاد می کنم.",
+"اگر وضع ظاهری و پوشش فرزندم خوشایند من نباشد ، از او انتقاد می کنم .",
 "وقتی به فرزندم ابراز علاقه و محبت می کنم که او مطابق میل من عمل کند.",
 "اجازه می دهم تا فرزندم در قوانین و مقررات خانواده دخالت کند و نظر دهد.",
-"وقتی فرزندم از دوستانش برایم تعریف می کند حتی اگر دوستانش مورد تایید من نباشند همچنان با توجه به حرفهایش گوش می دهم.",
-"فرزندم را مرتب بابت اشتباهاتش سرزنش می کنم.",
+"وقتی فرزندم از دوستانش برایم تعریف می کند حتی اگر  دوستانش مورد تایید من نباشند همچنان با توجه به حرفهایش گوش می دهم .",
+"فرزندم را مرتب بابت اشتباهاتش سرزنش می کنم .",
 "اوقات گرم و صمیمی ای با فرزندم دارم.",
-"در مشکلاتی که با فرزندم دارم ، سعی می کنم برای حل مشکل در وقت مناسب با او به گفتگو بپردازم.",
+"در مشکلاتی که با فرزندم دارم ، سعی می کنم برای حل مشکل در وقت مناسب با او به گفتگو بپردازم .",
 "وقتی فرزندم می خواهد دوستانش را به منزل دعوت کند با او همراهی می کنم.",
 "دائم به فرزندم می گویم که حرف مرا گوش نمی کند.",
-"اگر نحوه صحبت کردن فرزندم را دوست نداشته باشم از او ایراد می گیرم.",
-"وقتی فرزندم کار نادرست یا اشتباهی انجام دهد تا مدتی آن را به رخش می کشم.",
-"به فرزندم در مورد پیامد و نتیجه کارهایش توضیح می دهم.",
-"هنگام مشاجره با فرزندم ، او را تهدید به محرومیت از بعضی امکاناتش می کنم.",
+"اگر نحوه صحبت کردن فرزندم را دوست نداشته باشم از او ایراد می گیرم .",
+"وقتی فرزندم کار نادرست یا اشتباهی انجام دهد تا مدتی آن را به رخش می کشم .",
+"به فرزندم در مورد پیامد و نتیجه کارهایش توضیح می دهم .",
+"هنگام مشاجره با فرزندم ، او را تهدید به محرومیت از بعضی امکاناتش می کنم .",
 "برای تنبیه فرزندم اجازه نمی دهم کار مورد علاقه اش را انجام دهد یا از وسایل مورد علاقه اش استفاده کند."
 ];
 
-/* ===== خرده‌مقیاس‌ها مطابق تعریف شما ====== */
-const subscales = {
-  "حمایت کردن": [1,4,17],
-  "دلگرمی دادن": [10,12,18,32],
-  "گوش دادن": [23,30],
-  "پذیرفتن": [6,11,29,34],
-  "اعتماد کردن": [2],
-  "احترام گذاشتن": [21,24],
-  "گفتگوکردن": [7,20,25,33,38],
-  "انتقاد کردن": [13,26,27,36],
-  "سرزنش کردن": [22,31],
-  "شکایت و گلایه کردن": [3,14,16],
-  "غر و نق زدن": [19,35,37],
-  "تهدیدکردن": [8,15,39],
-  "تنبیه کردن": [40],
-  "مهار کردن از راه رشوه دادن": [5,9,28]
-};
+// گزینه‌ها
+const options = ["همیشه", "اغلب اوقات", "گاهی اوقات", "به ندرت", "هرگز"];
+const scores = [4,3,2,1,0];
 
-/* ===== ایجاد سوالات در صفحه ===== */
-const qArea = document.getElementById('questionsArea');
-questions.forEach((txt, idx) => {
-  const qNum = idx + 1;
-  const div = document.createElement('div');
-  div.className = 'question';
-  div.innerHTML = `<div style="font-weight:600;margin-bottom:6px">سوال ${qNum}:</div>
-    <div style="margin-bottom:6px">${txt}</div>
-    <div class="options">
-      <label><input type="radio" name="Q${qNum}" value="4" required /> همیشه</label>
-      <label><input type="radio" name="Q${qNum}" value="3" /> اغلب اوقات</label>
-      <label><input type="radio" name="Q${qNum}" value="2" /> گاهی اوقات</label>
-      <label><input type="radio" name="Q${qNum}" value="1" /> به ندرت</label>
-      <label><input type="radio" name="Q${qNum}" value="0" /> هرگز</label>
-    </div>`;
-  qArea.appendChild(div);
+// ========================= تولید فرم سوالات =========================
+const container = document.getElementById("questions");
+questions.forEach((q,i)=>{
+    let div = document.createElement("div");
+    div.className = "question";
+    let html = `<label>${i+1}. ${q}</label>`;
+    options.forEach((opt,j)=>{
+        html += `<input type="radio" name="q${i+1}" value="${scores[j]}" required> ${opt} `;
+    });
+    div.innerHTML = html;
+    container.appendChild(div);
 });
 
-/* ===== توابع کمکی ===== */
-function interpretScore(sum, count) {
-  const max = count * 4;
-  const pct = (sum / max) * 100;
-  if (pct <= 33) return {label:"پایین", pct: Math.round(pct)};
-  if (pct <= 66) return {label:"متوسط", pct: Math.round(pct)};
-  return {label:"بالا", pct: Math.round(pct)};
-}
+// ========================= ارسال فرم =========================
+const form = document.getElementById("surveyForm");
+form.addEventListener("submit", function(e){
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value,key)=>{ data[key]=value; });
 
-async function postToSheet(payload) {
-  const res = await fetch(WEB_APP_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error("ارسال به شیت موفق نبود: " + txt);
-  }
-  // Apps Script معمولا JSON برمی‌گرداند یا خالی؛ ما فقط OK را چک می‌کنیم
-  try { return await res.json(); } catch(e){ return {status:"ok"} }
-}
+    // ارسال به Web App
+    fetch("https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec", {
+        method: "POST",
+        body: JSON.stringify(data)
+    })
+    .then(res=>res.json())
+    .then(res=>{
+        // محاسبه نمرات خرده مقیاس‌ها
+        const constructive = {
+            Supporting: [1,4,17],
+            Encouraging: [10,12,18,32],
+            Listening: [23,30,8],
+            Accepting: [6,11,29,34],
+            Trusting: [2],
+            Respecting: [21,24],
+            Negotiating: [7,20,25,33,38]
+        };
+        const destructive = {
+            Criticizing: [13,26,27,36],
+            Blaming: [22,31],
+            Complaining: [3,14,16],
+            Nagging: [19,35,37],
+            Threatening: [8,15,39],
+            Punishing: [40],
+            Bribing: [5,9,28]
+        };
 
-/* ===== ارسال فرم و محاسبه نتایج ===== */
-const form = document.getElementById('surveyForm');
-const submitBtn = document.getElementById('submitBtn');
-const statusMsg = document.getElementById('statusMsg');
-const resultBox = document.getElementById('resultBox');
+        function calcScores(mapping){
+            let scoresObj = {};
+            for(const [k,arr] of Object.entries(mapping)){
+                let sum=0;
+                arr.forEach(idx=>{
+                    let val = parseInt(data[`q${idx}`]);
+                    sum += val;
+                });
+                scoresObj[k]=sum;
+            }
+            return scoresObj;
+        }
 
-form.addEventListener('submit', async function(e){
-  e.preventDefault();
-  statusMsg.textContent = "";
-  resultBox.style.display = "none";
-  submitBtn.disabled = true;
-  submitBtn.textContent = "در حال ارسال ...";
+        const consScores = calcScores(constructive);
+        const desScores = calcScores(destructive);
 
-  try {
-    const fd = new FormData(form);
-    const payload = {
-      name: (fd.get('name') || '').trim(),
-      gender: fd.get('gender') || '',
-      age: fd.get('age') || '',
-      education: (fd.get('education') || '').trim()
-    };
-    for (let i=1;i<=40;i++){
-      const v = fd.get('Q'+i);
-      payload['Q'+i] = v !== null ? Number(v) : null;
-    }
-
-    // محاسبه خرده‌مقیاس‌ها
-    const subResults = {};
-    let constructiveSum = 0;
-    let destructiveSum = 0;
-    const constructiveKeys = ["حمایت کردن","دلگرمی دادن","گوش دادن","پذیرفتن","اعتماد کردن","احترام گذاشتن","گفتگوکردن"];
-    const destructiveKeys = ["انتقاد کردن","سرزنش کردن","شکایت و گلایه کردن","غر و نق زدن","تهدیدکردن","تنبیه کردن","مهار کردن از راه رشوه دادن"];
-
-    for (const key in subscales){
-      const qnums = subscales[key];
-      let s = 0;
-      qnums.forEach(n => {
-        const v = payload['Q'+n];
-        s += (typeof v === 'number' && !isNaN(v)) ? v : 0;
-      });
-      subResults[key] = {sum: s, max: qnums.length*4, interp: interpretScore(s, qnums.length).label, pct: interpretScore(s,qnums.length).pct};
-      if (constructiveKeys.includes(key)) constructiveSum += s;
-      if (destructiveKeys.includes(key)) destructiveSum += s;
-    }
-
-    // ساخت HTML جدول نتایج
-    let html = `<h3>نتایج شما</h3>
-      <table><thead><tr><th>بعد</th><th>نمره شما</th><th>بیشترین نمره</th><th>تفسیر</th></tr></thead><tbody>`;
-    for (const k of Object.keys(subResults)){
-      html += `<tr><td>${k}</td><td>${subResults[k].sum}</td><td>${subResults[k].max}</td><td>${subResults[k].interp} (${subResults[k].pct}%)</td></tr>`;
-    }
-    html += `</tbody></table>
-      <h4 style="margin-top:12px">جمع کل</h4>
-      <table><thead><tr><th>سبک</th><th>نمره شما</th></tr></thead>
-      <tbody>
-        <tr><td>سبک سازنده (Constructive)</td><td>${constructiveSum}</td></tr>
-        <tr><td>سبک مخرب (Destructive)</td><td>${destructiveSum}</td></tr>
-      </tbody></table>`;
-
-    resultBox.innerHTML = html;
-    resultBox.style.display = "block";
-
-    // ارسال داده‌ها به Google Sheet
-    payload.subResults = subResults;
-    payload.constructiveSum = constructiveSum;
-    payload.destructiveSum = destructiveSum;
-
-    try {
-      await postToSheet(payload);
-      statusMsg.innerHTML = `<span class="success">پاسخ شما با موفقیت ذخیره شد.</span>`;
-    } catch (err) {
-      statusMsg.innerHTML = `<span class="error">ارسال به شیت انجام نشد: ${err.message}</span>`;
-    }
-
-  } catch (err) {
-    statusMsg.innerHTML = `<span class="error">خطا: ${err.message}</span>`;
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "ارسال و مشاهده نتیجه";
-  }
+        let resultHtml = "<h3>نتایج شما:</h3>";
+        resultHtml += "<h4>سبک سازنده:</h4><ul>";
+        for(const [k,v] of Object.entries(consScores)){
+            resultHtml += `<li>${k}: ${v}</li>`;
+        }
+        resultHtml += "</ul><h4>سبک مخرب:</h4><ul>";
+        for(const [k,v] of Object.entries(desScores)){
+            resultHtml += `<li>${k}: ${v}</li>`;
+        }
+        resultHtml += "</ul>";
+        document.getElementById("result").innerHTML = resultHtml;
+        document.getElementById("result").style.display = "block";
+    })
+    .catch(err=>{ alert("خطا در ارسال داده‌ها: "+err); });
 });
 </script>
+</div>
 </body>
 </html>
