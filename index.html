@@ -162,10 +162,12 @@ function interpretScore(subName, sum) {
 
 /* ====== ارسال داده به Web App (Google Apps Script) ====== */
 async function postToSheet(payload) {
-  if (!WEB_APP_URL || WEB_APP_URL === "YOUR_WEB_APP_URL") {
+  if (!WEB_APP_URL || WEB_APP_URL === "https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec
+") {
     throw new Error("آدرس وب‌اپ Google Sheets در کد تعیین نشده است. لطفاً WEB_APP_URL را جایگزین کنید.");
   }
-  const res = await fetch(WEB_APP_URL, {
+  const res = await fetch(https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec
+, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
