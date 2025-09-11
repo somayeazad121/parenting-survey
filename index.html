@@ -1,64 +1,79 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>پرسشنامه سبک فرزندپروری</title>
+
+<!-- سبک ساده و بک‌گراند سبز ملایم -->
 <style>
-body {
-    font-family: Tahoma, sans-serif;
-    background-color: #c6f5d3; /* سبز ملایم */
-    direction: rtl;
-    padding: 20px;
-}
-.container {
-    background-color: #fff;
-    padding: 20px 30px;
-    border-radius: 10px;
-    max-width: 900px;
-    margin: auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-h1 { text-align: center; }
-.question { margin-bottom: 15px; }
-label { display: block; margin-bottom: 5px; }
-input[type=text], select { width: 100%; padding: 8px; margin-bottom: 10px; }
-button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin-top:10px; }
-.result { margin-top: 20px; padding: 15px; background-color: #e2f0d9; border-radius: 8px; }
+  body{font-family: Tahoma, Arial, sans-serif; direction: rtl; background:#dff5df; margin:0; padding:18px}
+  .container{max-width:980px;margin:18px auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
+  h1{color:#1b5e20;text-align:center;margin-top:0}
+  .row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+  label.inline{margin-left:8px}
+  .question{border-bottom:1px solid #f0f0f0;padding:10px 0}
+  .options label{margin-left:10px;font-size:14px}
+  input[type="text"], input[type="number"]{padding:8px;border:1px solid #ccc;border-radius:6px}
+  button{background:#2e7d32;color:#fff;border:0;padding:10px 16px;border-radius:8px;cursor:pointer}
+  button[disabled]{opacity:.6}
+  .result{margin-top:18px;padding:14px;border-radius:8px;background:#f6fff6;border:1px solid #d7f0d7}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{padding:8px;border:1px solid #e8f3ea;text-align:center}
+  th{background:#e9f7ec}
+  .muted{color:#666;font-size:13px}
+  .error{color:#b00020}
+  @media(max-width:640px){
+    .row{flex-direction:column;align-items:stretch}
+    .options label{display:block;margin:6px 0}
+  }
 </style>
 </head>
 <body>
-<div class="container">
-<h1>پرسشنامه سنجش سبک فرزندپروری مبتنی بر تئوری انتخاب</h1>
-<p>لطفاً مشخصات خود را وارد کرده و برای هر سؤال یکی از گزینه‌ها را انتخاب نمایید.</p>
+  <div class="container">
+    <h1>پرسشنامه سنجش سبک فرزندپروری مبتنی بر تئوری انتخاب</h1>
+    <p class="muted">لطفاً مشخصات را وارد کنید و برای هر سؤال یکی از گزینه‌ها را انتخاب نمایید.</p>
 
-<form id="surveyForm">
-<label>نام:</label>
-<input type="text" name="name" required>
+    <form id="surveyForm">
+      <div class="row">
+        <label>نام: <input type="text" name="name" required /></label>
+        <div>
+          <span class="inline">جنسیت:</span>
+          <label class="inline"><input type="radio" name="gender" value="زن" required/> زن</label>
+          <label class="inline"><input type="radio" name="gender" value="مرد" /> مرد</label>
+        </div>
+        <label>سن: <input type="number" name="age" min="0" required style="width:120px" /></label>
+        <label>تحصیلات: <input type="text" name="education" required /></label>
+      </div>
 
-<label>جنسیت:</label>
-<input type="radio" name="gender" value="زن" required> زن
-<input type="radio" name="gender" value="مرد" required> مرد
+      <hr />
 
-<label>سن:</label>
-<input type="text" name="age" required>
+      <div id="questions"></div>
 
-<label>تحصیلات:</label>
-<input type="text" name="education" required>
+      <div style="margin-top:12px">
+        <button type="submit" id="submitBtn">ارسال و مشاهده نتیجه</button>
+        <span id="status" style="margin-left:12px"></span>
+      </div>
+    </form>
 
-<hr>
+    <div id="resultBox" class="result" style="display:none"></div>
+    <div style="margin-top:10px">
+      <button id="downloadBtn" style="display:none">دانلود PDF نتیجه</button>
+    </div>
 
-<div id="questions"></div>
+    <p class="muted" style="margin-top:12px">توجه: فرم به آدرس Web App ارسال می‌شود و همزمان نتیجه برای شما نمایش داده می‌شود. اگر ارسال به شیت با خطا مواجه شد، نتیجه به‌صورت محلی نمایش داده می‌شود.</p>
+  </div>
 
-<button type="submit">ارسال و مشاهده نتیجه</button>
-<button type="button" id="downloadPDF" style="display:none;">دانلود PDF</button>
-</form>
+  <!-- کتابخانه‌ها برای تولید PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<div class="result" id="result" style="display:none;"></div>
+  <script>
+  // ---------- تنظیم: WEB APP URL شما (همان که دادی) ----------
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec";
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-// ========================= تمام ۴۰ سؤال =========================
-const questions = [
+  // ---------- 40 سؤال (ASCII quotes, UTF-8 file) ----------
+  const questions = [
 "در صورت بروز رفتار اشتباهی از فرزندم به او اطمینان می دهم که جدای از رفتارش او برای من ارزشمند است.",
 "به فرزندم در مسائل شخصی اش مثل روابط اجتماعی و تحصیلی ...اعتماد دارم.",
 "وقتی فرزندم را با فرزند دیگران مقایسه می کنم و احساس می کنم به خوبی فرزندان دیگران نیست، این احساسات را به فرزندم منتقل می کنم.",
@@ -68,145 +83,244 @@ const questions = [
 "به فرزندم توضیح می دهم که چرا باید از قوانین پیروی کند.",
 "به فرزندم هشدار می دهم که اگر به تقاضای من عمل نکند خواسته هایش را برآورده نخواهم کرد.",
 "به فرزندم می گویم که اگر خواهان رفتارهای مطلوبی از طرف من است، در عوض باید خواسته هایم را اجابت کند.",
-"وقتی فرزندم با احترام با دیگران برخورد می کند، او را تحسین می کنم.",
+"وقتی فرزندم با احترام با دیگران برخورد می کند او را تحسین می کنم.",
 "فرزندم می تواند هنگام خرید به سلیقه خودش هر چیز را انتخاب کند.",
-"وقتی فرزندم در تکالیف و کارهایش موفق می شود، او را تحسین می کنم.",
-"اگر رابطه فرزندم با دوستانش مورد تایید من نباشد، از او ایراد می گیرم.",
+"وقتی فرزندم در تکالیف و کارهایش موفق می شود او را تحسین می کنم.",
+"اگر رابطه فرزندم با دوستانش مورد تایید من نباشد از او ایراد می گیرم.",
 "از عملکرد تحصیلی فرزندم گلایه می کنم.",
 "فرزندم را تهدید می کنم که اگر خواسته ام را عملی نکند، پیامدهای بدی متوجه اوست.",
 "نارضایتی از شخصیت فرزندم را برایش بازگو می کنم.",
-"حتی وقتی مخالف خواسته یا کار فرزندم هستم، او را تشویق می کنم تا حرفش را بزند.",
+"حتی وقتی مخالف خواسته یا کار فرزندم هستم او را تشویق می کنم تا حرفش را بزند.",
 "سعی می کنم کوچکترین رفتارهای مثبت فرزندم را تحسین کنم.",
 "به طور مرتب به فرزندم یادآوری می کنم که وظایف و تکالیفش را فراموش نکند.",
 "یکی از برنامه های طبیعی خانه ما گفتگوهای دوستانه خانوادگی است.",
-"قبل از اینکه از فرزندم بخواهم کاری انجام دهد، به میل و خواسته او نیز توجه می کنم.",
+"قبل از اینکه از فرزندم بخواهم کاری انجام دهد به میل و خواسته او نیز توجه می کنم.",
 "فرزندم را بابت اینکه مانند همسالانش قادر نیست از عهده وظایفش برآید سرزش می کنم.",
-"حتی وقتی فرزندم صحبت هایی که می کند به نظرم ارزش چندانی ندارد، با این حال به صحبت هایش توجه می کنم.",
-"زمانی که فرزندم با من اختلاف نظر دارد، با احترام با او برخورد می کنم.",
+"حتی وقتی فرزندم صحبتهایی که می کند به نظرم ارزش چندانی ندارد با این حال به صحبتهایش توجه می کنم.",
+"زمانی که فرزندم با من اختلاف نظر دارد با احترام با او برخورد می کنم.",
 "به فرزندم می گویم که در مورد کارهای خوب یا بد او چگونه فکر می کنم و چه احساسی دارم.",
-"اگر نحوه رفتار فرزندم خوشایندم نباشد، از او انتقاد می کنم.",
+"اگر نحوه رفتار فرزندم خوشایندم نباشد از او انتقاد می کنم.",
 "اگر وضع ظاهری و پوشش فرزندم خوشایند من نباشد، از او انتقاد می کنم.",
 "وقتی به فرزندم ابراز علاقه و محبت می کنم که او مطابق میل من عمل کند.",
 "اجازه می دهم تا فرزندم در قوانین و مقررات خانواده دخالت کند و نظر دهد.",
-"وقتی فرزندم از دوستانش برایم تعریف می کند، حتی اگر دوستانش مورد تایید من نباشند، همچنان با توجه به حرفهایش گوش می دهم.",
+"وقتی فرزندم از دوستانش برایم تعریف می کند حتی اگر دوستانش مورد تایید من نباشند همچنان با توجه به حرفهایش گوش می دهم.",
 "فرزندم را مرتب بابت اشتباهاتش سرزنش می کنم.",
 "اوقات گرم و صمیمی ای با فرزندم دارم.",
 "در مشکلاتی که با فرزندم دارم، سعی می کنم برای حل مشکل در وقت مناسب با او به گفتگو بپردازم.",
-"وقتی فرزندم می خواهد دوستانش را به منزل دعوت کند، با او همراهی می کنم.",
+"وقتی فرزندم می خواهد دوستانش را به منزل دعوت کند با او همراهی می کنم.",
 "دائم به فرزندم می گویم که حرف مرا گوش نمی کند.",
-"اگر نحوه صحبت کردن فرزندم را دوست نداشته باشم، از او ایراد می گیرم.",
-"وقتی فرزندم کار نادرست یا اشتباهی انجام دهد، تا مدتی آن را به رخش می کشم.",
+"اگر نحوه صحبت کردن فرزندم را دوست نداشته باشم از او ایراد می گیرم.",
+"وقتی فرزندم کار نادرست یا اشتباهی انجام دهد تا مدتی آن را به رخش می کشم.",
 "به فرزندم در مورد پیامد و نتیجه کارهایش توضیح می دهم.",
 "هنگام مشاجره با فرزندم، او را تهدید به محرومیت از بعضی امکاناتش می کنم.",
 "برای تنبیه فرزندم اجازه نمی دهم کار مورد علاقه اش را انجام دهد یا از وسایل مورد علاقه اش استفاده کند."
-];
+  ];
 
-// گزینه‌ها و نمره‌ها
-const options = ["همیشه", "اغلب اوقات", "گاهی اوقات", "به ندرت", "هرگز"];
-const scores = [4,3,2,1,0];
+  const optionLabels = ["همیشه","اغلب اوقات","گاهی اوقات","به ندرت","هرگز"];
+  const optionValues = [4,3,2,1,0];
 
-// تولید فرم سوالات
-const container = document.getElementById("questions");
-questions.forEach((q,i)=>{
-    let div = document.createElement("div");
-    div.className = "question";
-    let html = `<label>${i+1}. ${q}</label>`;
-    options.forEach((opt,j)=>{
-        html += `<input type="radio" name="q${i+1}" value="${scores[j]}" required> ${opt} `;
+  // Render questions (safe, no smart quotes)
+  const qContainer = document.getElementById('questions');
+  questions.forEach((text, idx) => {
+    const num = idx+1;
+    const qDiv = document.createElement('div');
+    qDiv.className = 'question';
+    let inner = `<div style="font-weight:600;margin-bottom:6px">سوال ${num}:</div><div style="margin-bottom:6px">${text}</div><div class="options">`;
+    optionLabels.forEach((lab,i)=>{
+      // make first radio required to enforce selection per group via simple JS validation below (we'll validate anyway)
+      inner += `<label style="margin-left:10px"><input type="radio" name="q${num}" value="${optionValues[i]}"> ${lab}</label>`;
     });
-    div.innerHTML = html;
-    container.appendChild(div);
-});
+    inner += `</div>`;
+    qDiv.innerHTML = inner;
+    qContainer.appendChild(qDiv);
+  });
 
-// ========================= محاسبه نمره =========================
-function calcScores(data){
-    const constructive = {
-        Supporting: [1,4,17],
-        Encouraging: [10,12,18,32],
-        Listening: [23,30,8],
-        Accepting: [6,11,29,34],
-        Trusting: [2],
-        Respecting: [21,24],
-        Negotiating: [7,20,25,33,38]
-    };
-    const destructive = {
-        Criticizing: [13,26,27,36],
-        Blaming: [22,31],
-        Complaining: [3,14,16],
-        Nagging: [19,35,37],
-        Threatening: [8,15,39],
-        Punishing: [40],
-        Bribing: [5,9,28]
-    };
+  // Subscale definitions (question numbers are 1-based)
+  const subscales = {
+    "حمایت کردن": [1,4,17],
+    "دلگرمی دادن": [10,12,18,32],
+    "گوش دادن": [23,30],
+    "پذیرفتن": [6,11,29,34],
+    "اعتماد کردن": [2],
+    "احترام گذاشتن": [21,24],
+    "گفتگوکردن": [7,20,25,33,38],
+    "انتقاد کردن": [13,26,27,36],
+    "سرزنش کردن": [22,31],
+    "شکایت و گلایه کردن": [3,14,16],
+    "غر و نق زدن": [19,35,37],
+    "تهدیدکردن": [8,15,39],
+    "تنبیه کردن": [40],
+    "مهار از طریق رشوه (باج دادن)": [5,9,28]
+  };
 
-    function score(mapping){
-        let res = {};
-        for(const [k,arr] of Object.entries(mapping)){
-            let sum = 0;
-            arr.forEach(idx=> sum += parseInt(data[`q${idx}`]||0));
-            res[k] = sum;
-        }
-        return res;
+  // Utility: validate all q answered
+  function validateAllAnswers(){
+    for(let i=1;i<=40;i++){
+      const checked = document.querySelector(`input[name="q${i}"]:checked`);
+      if(!checked) return i; // return first missing question index
+    }
+    return 0;
+  }
+
+  // Calculate scores
+  function calculateResults(data){
+    const results = {};
+    for(const [name, arr] of Object.entries(subscales)){
+      let sum = 0;
+      arr.forEach(qnum => {
+        const v = parseInt(data[`q${qnum}`]);
+        if(!isNaN(v)) sum += v;
+      });
+      const max = arr.length * 4;
+      const pct = max>0 ? Math.round((sum / max) * 100) : 0;
+      results[name] = {sum, max, pct};
+    }
+    // totals
+    const constructiveKeys = ["حمایت کردن","دلگرمی دادن","گوش دادن","پذیرفتن","اعتماد کردن","احترام گذاشتن","گفتگوکردن"];
+    const destructiveKeys = ["انتقاد کردن","سرزنش کردن","شکایت و گلایه کردن","غر و نق زدن","تهدیدکردن","تنبیه کردن","مهار از طریق رشوه (باج دادن)"];
+    let consTotal=0, consMax=0;
+    constructiveKeys.forEach(k=>{ consTotal += results[k].sum; consMax += results[k].max; });
+    let desTotal=0, desMax=0;
+    destructiveKeys.forEach(k=>{ desTotal += results[k].sum; desMax += results[k].max; });
+
+    return {results, consTotal, consMax, desTotal, desMax};
+  }
+
+  // Show results HTML
+  function renderResults(data){
+    const calc = calculateResults(data);
+    const rs = calc.results;
+    let html = `<h3>نتایج شما</h3>`;
+    html += `<h4>مشخصات</h4><table><tr><th>نام</th><th>جنسیت</th><th>سن</th><th>تحصیلات</th></tr>`;
+    html += `<tr><td>${escapeHtml(data.name||"")}</td><td>${escapeHtml(data.gender||"")}</td><td>${escapeHtml(data.age||"")}</td><td>${escapeHtml(data.education||"")}</td></tr></table>`;
+
+    html += `<h4 style="margin-top:12px">سبک سازنده</h4><table><thead><tr><th>بعد</th><th>نمره شما</th><th>بیشترین نمره</th><th>درصد</th></tr></thead><tbody>`;
+    const constructiveOrder = ["حمایت کردن","دلگرمی دادن","گوش دادن","پذیرفتن","اعتماد کردن","احترام گذاشتن","گفتگوکردن"];
+    constructiveOrder.forEach(k=>{
+      html += `<tr><td>${k}</td><td>${rs[k].sum}</td><td>${rs[k].max}</td><td>${rs[k].pct}%</td></tr>`;
+    });
+    html += `</tbody></table>`;
+    html += `<p style="margin-top:8px">جمع سبک سازنده: ${calc.consTotal} از ${calc.consMax} — ${Math.round((calc.consTotal/calc.consMax)*100)}%</p>`;
+
+    html += `<h4 style="margin-top:12px">سبک مخرب</h4><table><thead><tr><th>بعد</th><th>نمره شما</th><th>بیشترین نمره</th><th>درصد</th></tr></thead><tbody>`;
+    const destructiveOrder = ["انتقاد کردن","سرزنش کردن","شکایت و گلایه کردن","غر و نق زدن","تهدیدکردن","تنبیه کردن","مهار از طریق رشوه (باج دادن)"];
+    destructiveOrder.forEach(k=>{
+      html += `<tr><td>${k}</td><td>${rs[k].sum}</td><td>${rs[k].max}</td><td>${rs[k].pct}%</td></tr>`;
+    });
+    html += `</tbody></table>`;
+    html += `<p style="margin-top:8px">جمع سبک مخرب: ${calc.desTotal} از ${calc.desMax} — ${Math.round((calc.desTotal/calc.desMax)*100)}%</p>`;
+
+    // optional: list question-by-question answers
+    html += `<h4 style="margin-top:12px">پاسخ‌های شما</h4><table><thead><tr><th>شماره</th><th>پرسش</th><th>پاسخ (نمره)</th></tr></thead><tbody>`;
+    for(let i=1;i<=40;i++){
+      const text = questions[i-1];
+      const val = data[`q${i}`] ?? "";
+      html += `<tr><td>${i}</td><td style="text-align:left">${escapeHtml(text)}</td><td>${val}</td></tr>`;
+    }
+    html += `</tbody></table>`;
+
+    const resultBox = document.getElementById('resultBox');
+    resultBox.innerHTML = html;
+    resultBox.style.display = 'block';
+    document.getElementById('downloadBtn').style.display = 'inline-block';
+  }
+
+  // escape for safety
+  function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // submit handler
+  document.getElementById('surveyForm').addEventListener('submit', async function(evt){
+    evt.preventDefault();
+    document.getElementById('status').textContent = '';
+    const missing = validateAllAnswers();
+    if(missing){
+      alert('لطفاً همه سؤالات را پاسخ دهید. سوال شماره ' + missing + ' پاسخ داده نشده است.');
+      return;
     }
 
-    return {cons: score(constructive), des: score(destructive)};
-}
-
-// ========================= نمایش نتایج =========================
-function showResult(data){
-    const {cons, des} = calcScores(data);
-    let totalCons = Object.values(cons).reduce((a,b)=>a+b,0);
-    let totalDes = Object.values(des).reduce((a,b)=>a+b,0);
-
-    let resultHtml = "<h3>نتایج شما:</h3>";
-    resultHtml += "<h4>سبک سازنده:</h4><ul>";
-    for(const [k,v] of Object.entries(cons)){
-        let pct = ((v/totalCons)*100).toFixed(1);
-        resultHtml += `<li>${k}: ${v} (${pct}%)</li>`;
-    }
-    resultHtml += "</ul><h4>سبک مخرب:</h4><ul>";
-    for(const [k,v] of Object.entries(des)){
-        let pct = ((v/totalDes)*100).toFixed(1);
-        resultHtml += `<li>${k}: ${v} (${pct}%)</li>`;
-    }
-    resultHtml += "</ul>";
-    document.getElementById("result").innerHTML = resultHtml;
-    document.getElementById("result").style.display = "block";
-    document.getElementById("downloadPDF").style.display = "inline-block";
-}
-
-// ========================= ارسال فرم =========================
-const form = document.getElementById("surveyForm");
-form.addEventListener("submit", function(e){
-    e.preventDefault();
-    const formData = new FormData(form);
+    const fd = new FormData(this);
     const data = {};
-    formData.forEach((value,key)=>{ data[key]=value; });
+    fd.forEach((v,k)=> data[k] = v);
 
-    // نمایش نتایج فوری
-    showResult(data);
+    // show results immediately (local)
+    try{
+      renderResults(data);
+    }catch(e){
+      console.error('خطا در نمایش نتیجه:', e);
+      alert('خطا در محاسبه نتیجه (کنسول را بررسی کنید).');
+    }
 
-    // ارسال به Web App گوگل
-    fetch("https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec", {
-        method: "POST",
+    // try send to Google Apps Script (JSON)
+    try {
+      const res = await fetch(WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
-    })
-    .then(res=>res.json())
-    .then(res=>console.log("ارسال به شیت موفق"))
-    .catch(err=>alert("خطا در ارسال داده‌ها: "+err));
-});
+      });
+      if (!res.ok) {
+        console.warn('response not ok', res.status, res.statusText);
+        document.getElementById('status').innerHTML = '<span class="error">ارسال به شیت ناموفق بود (کد ' + res.status + '). لطفاً تنظیمات Web App را بررسی کنید.</span>';
+      } else {
+        // try parse json (Apps Script may return JSON or text)
+        try {
+          const j = await res.json();
+          console.log('WebApp response', j);
+        } catch(e){
+          console.log('WebApp returned non-JSON OK response');
+        }
+        document.getElementById('status').innerHTML = '<span style="color:green">پاسخ با موفقیت به شیت ارسال شد.</span>';
+      }
+    } catch(err) {
+      // network / CORS / 401 ...
+      console.error('send error', err);
+      document.getElementById('status').innerHTML = `<span class="error">ارسال به شیت انجام نشد: ${escapeHtml(String(err))}</span><br>
+      <small class="muted">راهنما: اگر این خطا را مشاهده می‌کنید، لطفاً در Google Apps Script > Deploy > Web app بررسی کنید: <br>
+      • Execute as = Me<br>• Who has access = Anyone (even anonymous)</small>`;
+    }
+  });
 
-// ========================= دانلود PDF =========================
-document.getElementById("downloadPDF").addEventListener("click", function(){
-    const { jsPDF } = window.jspdf;
-    let doc = new jsPDF({orientation: "p", unit:"pt", format:"a4"});
-    let content = document.getElementById("result").innerText;
-    let lines = content.split('\n');
-    let y = 50;
-    lines.forEach(line => { doc.text(line, 40, y); y += 20; });
-    doc.save("نتایج_پرسشنامه.pdf");
-});
-</script>
-</div>
+  // download PDF (capture resultBox)
+  document.getElementById('downloadBtn').addEventListener('click', async function(){
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'در حال ساخت PDF...';
+    const el = document.getElementById('resultBox');
+
+    try {
+      const canvas = await html2canvas(el, { scale: 2, useCORS: true });
+      const imgData = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p','mm','a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgProps = pdf.getImageProperties(imgData);
+      const imgWidth = pageWidth - 20; // margins
+      const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+      let position = 10;
+      if(imgHeight <= pageHeight - 20){
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      } else {
+        // if long, split into pages by drawing full-size and adding pages
+        let heightLeft = imgHeight;
+        let y = 0;
+        while(heightLeft > 0){
+          pdf.addImage(imgData, 'PNG', 10, position - y, imgWidth, imgHeight);
+          heightLeft -= (pageHeight - 20);
+          if(heightLeft > 0) pdf.addPage();
+          y += (pageHeight - 20);
+        }
+      }
+      pdf.save('نتایج_پرسشنامه.pdf');
+    } catch(err){
+      console.error('pdf error', err);
+      alert('خطا در ساخت PDF: ' + err);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'دانلود PDF';
+    }
+  });
+
+  // end script
+  </script>
 </body>
 </html>
