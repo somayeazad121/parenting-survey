@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لینک‌های من با QR</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+    body {
+        font-family: 'Vazirmatn', sans-serif;
+        background: linear-gradient(135deg, #f6d365, #fda085);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+    .container {
+        background: white;
+        padding: 25px 20px;
+        border-radius: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        text-align: center;
+        width: 90%;
+        max-width: 400px;
+        transition: transform 0.3s;
+    }
+    .container:hover { transform: scale(1.02); }
+    h1 { margin-bottom: 15px; color: #ff6f61; font-size: 1.5em; }
+    .intro {
+        font-size: 0.85em;
+        color: #555;
+        margin-bottom: 20px;
+        text-align: center;
+        line-height: 1.5em;
+    }
+    .link-block {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        margin: 12px auto;
+        padding: 12px 20px;
+        border-radius: 15px;
+        width: 85%;
+        max-width: 320px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.3s;
+    }
+    .link-block:hover { transform: translateY(-3px); }
+    .link-block a {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-grow: 1;
+    }
+    .qrcode-small {
+        width: 55px;
+        height: 55px;
+        background: white;
+        padding: 3px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        transition: transform 0.2s;
+    }
+    .qrcode-small:hover { transform: scale(1.2); }
+
+    /* رنگ های پاستیلی برای دکمه‌ها */
+    .survey { background: #a8dadc; }
+    .instagram { background: #ffb4a2; }
+    .telegram { background: #ffe066; }
+    .eitaa { background: #cdb4db; }
+    .email { background: #90be6d; }
+    .whatsapp { background: #f9c74f; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>دکتر سمیه آزاد</h1>
+    <p class="intro">
+      کد نظام روانشناسی 22601<br>
+       <br>
+    </p>
+
+    <div class="link-block survey">
+        <div id="qrcode1" class="qrcode-small"></div>
+        <a href="https://somayeazad121.github.io/parenting-survey/" target="_blank">
+            <img src="https://img.icons8.com/ios-filled/24/ffffff/link.png"/> پرسشنامه سبکهای فرزندپروری
+        </a>
+    </div>
+
+    <div class="link-block instagram">
+        <div id="qrcode2" class="qrcode-small"></div>
+        <a href="https://instagram.com/drsomayeazad" target="_blank">
+            <img src="https://img.icons8.com/ios-glyphs/24/ffffff/instagram-new.png"/> اینستاگرام
+        </a>
+    </div>
+
+    <div class="link-block telegram">
+        <div id="qrcode3" class="qrcode-small"></div>
+        <a href="https://t.me/donyayematloob1" target="_blank">
+            <img src="https://img.icons8.com/ios-glyphs/24/ffffff/telegram-app.png"/> تلگرام
+        </a>
+    </div>
+
+    <div class="link-block eitaa">
+        <div id="qrcode4" class="qrcode-small"></div>
+        <a href="https://eitaa.com/donyayematloob" target="_blank">
+            <span style="
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                width:24px; height:24px;
+                background:white;
+                color:black;
+                font-weight:bold;
+                border-radius:4px;
+                font-family: 'Vazirmatn', sans-serif;
+            ">e</span> ایتا
+        </a>
+    </div>
+
+    <div class="link-block email">
+        <div id="qrcode5" class="qrcode-small"></div>
+        <a href="mailto:drsomayeazad@gmail.com">
+            <img src="https://img.icons8.com/ios-filled/24/ffffff/new-post.png"/> ایمیل من
+        </a>
+    </div>
+
+    <div class="link-block whatsapp">
+        <div id="qrcode6" class="qrcode-small"></div>
+        <a href="https://wa.me/989335556292" target="_blank">
+            <img src="https://img.icons8.com/ios-filled/24/ffffff/whatsapp.png"/> واتساپ
+        </a>
+    </div>
+
+
+<!-- ادامه همان کد قبلی ... -->
+    <div class="link-block resume" style="background:#ffcbcb;">
+        <div id="qrcode7" class="qrcode-small"></div>
+        <a href="https://somayeazad121.github.io/resume" target="_blank">
+            <img src="https://img.icons8.com/ios-filled/24/ffffff/document.png"/> رزومه من
+        </a>
+    </div>
+</div>
+
+<script>
+    new QRCode(document.getElementById("qrcode1"), { text: "https://somayeazad121.github.io/parenting-survey/", width: 55, height: 55 });
+    new QRCode(document.getElementById("qrcode2"), { text: "https://instagram.com/drsomayeazad", width: 55, height: 55 });
+    new QRCode(document.getElementById("qrcode3"), { text: "https://t.me/donyayematloob1", width: 55, height: 55 });
+    new QRCode(document.getElementById("qrcode4"), { text: "https://eitaa.com/donyayematloob", width: 55, height: 55 });
+    new QRCode(document.getElementById("qrcode5"), { text: "mailto:drsomayeazad@gmail.com", width: 55, height: 55 });
+    new QRCode(document.getElementById("qrcode6"), { text: "https://wa.me/989335556292", width: 55, height: 55 });
+      new QRCode(document.getElementById("qrcode7"), { text: "https://somayeazad121.github.io/resume", width: 55, height: 55 });
+</script>
+</body>
+</html>
