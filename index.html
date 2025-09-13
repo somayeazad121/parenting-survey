@@ -3,324 +3,547 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>پرسشنامه سبک فرزندپروری</title>
-
-<!-- سبک ساده و بک‌گراند سبز ملایم -->
+<title>پرسشنامه سبک فرزندپروری — گزارش فوری</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-  body{font-family: Tahoma, Arial, sans-serif; direction: rtl; background:#dff5df; margin:0; padding:18px}
-  .container{max-width:980px;margin:18px auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
-  h1{color:#1b5e20;text-align:center;margin-top:0}
-  .row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
-  label.inline{margin-left:8px}
-  .question{border-bottom:1px solid #f0f0f0;padding:10px 0}
-  .options label{margin-left:10px;font-size:14px}
-  input[type="text"], input[type="number"]{padding:8px;border:1px solid #ccc;border-radius:6px}
-  button{background:#2e7d32;color:#fff;border:0;padding:10px 16px;border-radius:8px;cursor:pointer}
-  button[disabled]{opacity:.6}
-  .result{margin-top:18px;padding:14px;border-radius:8px;background:#f6fff6;border:1px solid #d7f0d7}
-  table{width:100%;border-collapse:collapse;margin-top:10px}
-  th,td{padding:8px;border:1px solid #e8f3ea;text-align:center}
-  th{background:#e9f7ec}
-  .muted{color:#666;font-size:13px}
-  .error{color:#b00020}
-  @media(max-width:640px){
-    .row{flex-direction:column;align-items:stretch}
-    .options label{display:block;margin:6px 0}
+  :root{
+    --bg:#f0faf6;
+    --card:#ffffff;
+    --accent:#0b67b2;
+    --accent2:#ff8a00;
+    --success:#2e7d32;
+    --danger:#d32f2f;
+    --purple:#7b1fa2;
+    --yellow:#f9a825;
+    --muted:#666;
+    font-family: Vazirmatn, Tahoma, Arial, sans-serif;
   }
+  /* کلی */
+  html,body{height:100%}
+  body{background:var(--bg);direction:rtl;margin:0;padding:18px;color:#111; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:12px auto;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 12px 30px rgba(0,0,0,0.06)}
+  h1{text-align:center;color:var(--accent);margin:6px 0 12px}
+  p.lead{color:var(--muted);text-align:center;margin-top:0}
+  .flex{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  label{font-weight:600}
+  input[type="text"],input[type="number"],select{padding:10px;border-radius:8px;border:1px solid #ddd;font-size:15px}
+  .questions{margin-top:12px}
+  .question{padding:12px;border-bottom:1px solid #f0f0f0}
+  .qtext{font-weight:600;margin-bottom:6px}
+  .options label{margin-left:12px;font-weight:500;display:inline-block}
+  .controls{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  button{background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+  button.secondary{background:#555}
+  .result{margin-top:18px;padding:14px;border-radius:10px;background:linear-gradient(180deg,#fbfffc,#f0fff6);border:1px solid #e6f6ea}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{padding:8px;border:1px solid #e9f7ef;text-align:center}
+  th{background:#eefaf4;font-weight:700}
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  canvas{background:#fff;border-radius:8px;padding:8px}
+  .social{margin-top:18px;text-align:center;padding:12px;border-radius:8px;background:#fff}
+  .social p{margin:6px 0;color:#333;font-weight:600}
+  .qrwrap{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap}
+  .recommend{background:#fff;padding:10px;border-radius:8px;border:1px solid #f0f0f0;margin-top:8px}
+  .hide{display:none}
+  .shareBtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+  .shareBtns button{padding:8px 10px;border-radius:8px;font-weight:700}
+  .muted{color:var(--muted)}
+  /* موبایل-friendly */
+  @media(max-width:900px){
+    .charts{grid-template-columns:1fr}
+    input[type="text"],input[type="number"],select{font-size:16px}
+    .qtext{font-size:15px}
+  }
+
+  /* محافظت ساده (بازدارنده کپی آسان) */
+  /* توجه: این‌ها باعث امنیت سورس نمی‌شوند - فقط مانع ساده‌اند */
+  html { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+  input, select, button, textarea, .result { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+
 </style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>پرسشنامه سنجش سبک فرزندپروری مبتنی بر تئوری انتخاب</h1>
-    <p class="muted">لطفاً مشخصات را وارد کنید و برای هر سؤال یکی از گزینه‌ها را انتخاب نمایید.</p>
+  <div class="wrap">
+    <h1>پرسشنامه سنجش سبک فرزندپروری (مبتنی بر تئوری انتخاب)</h1>
+
+<p style="text-align:center;">ساخته شده توسط: سمیه آزاد</p>
+   
+
+<div class="intro" style="background:#e0f7fa;padding:12px;border-radius:8px;margin-bottom:12px;text-align:center">
+  <p style="margin:4px 0;color:#004d40">
+    فرزندپروری آگاهانه و حمایتگر باعث رشد شخصیت و اعتمادبه‌نفس فرزندتان می‌شود. 
+    با پاسخ به این پرسشنامه می‌توانید سبک فرزندپروری خود را شناسایی و بهبود دهید.
+  </p>
+<p>برای مطالب بیشتر و دنبال کردن ما، ما را در شبکه‌های اجتماعی دنبال کنید:</p>
+
+  <div class="shareBtns" style="justify-content:center;margin-top:8px"> 
+  <a href="https://instagram.com/yourpage" target="_blank">اینستاگرام</a> |
+  <a href="https://t.me/yourchannel" target="_blank">تلگرام</a> |
+  <a href="https://wa.me/yourNumber" target="_blank">واتساپ</a> |
+  <a href="https://yourformlink.com" target="_blank">اشتراک پرسشنامه</a>
+  </div>
+</div>
+
+
+    <p class="lead">مشخصات اختیاری است — می توانید فقط سوالات ۴۰گانه را پاسخ دهید. در پایان گزارش گرافیکی + PDF + Excel دریافت می‌کنید.</p>
 
     <form id="surveyForm">
-      <div class="row">
-        <label>نام: <input type="text" name="name" required /></label>
-        <div>
-          <span class="inline">جنسیت:</span>
-          <label class="inline"><input type="radio" name="gender" value="زن" required/> زن</label>
-          <label class="inline"><input type="radio" name="gender" value="مرد" /> مرد</label>
+      <div class="flex" style="justify-content:space-between;align-items:center">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <label>نام (اختیاری):</label><input name="name" type="text" placeholder="مثلاً سها">
+          <label>جنسیت (اختیاری):</label>
+            <select name="gender">
+              <option value="">—</option>
+              <option>زن</option>
+              <option>مرد</option>
+            </select>
+          <label>سن (اختیاری):</label><input name="age" type="number" min="0" style="width:90px">
+          <label>تحصیلات (اختیاری):</label><input name="education" type="text" placeholder="مثلاً کارشناسی">
         </div>
-        <label>سن: <input type="number" name="age" min="0" required style="width:120px" /></label>
-        <label>تحصیلات: <input type="text" name="education" required /></label>
       </div>
 
-      <hr />
+      <hr style="margin-top:12px;border:none;border-top:1px solid #eef7f0">
 
-      <div id="questions"></div>
+      <div id="questions" class="questions"></div>
 
-      <div style="margin-top:12px">
-        <button type="submit" id="submitBtn">ارسال و مشاهده نتیجه</button>
-        <span id="status" style="margin-left:12px"></span>
+
+      <div class="controls">
+        <button id="submitBtn" type="submit">ارسال و مشاهده نتیجه</button>
+        <button id="resetBtn" type="button" class="secondary">پاک‌سازی فرم</button>
+        <div id="status" style="color:var(--danger);font-weight:600"></div>
       </div>
+
+<div class="invite-links" style="text-align:center; margin: 20px 0;">
+  <p> برای اطلاعات بیشتر، شبکه‌های ما را دنبال کنید:</p>
+
+
+ <p>اینستاگرام: <a href="https://www.instagram.com/drsomayeazad?utm_source=qr&igsh=dWRoeHNzaHdwOWJz" target="_blank">@drsomayeazad</a>
+       تلگرام: <a href="https://t.me/DonyayeMatloob_1" target="_blank">@DonyayeMatloob_1</a>
+        ایتا: <a href="https://eitaa.com/donyayematloob" target="_blank">@donyayematloob</a></p>
+
+
+
+  <a href="https://instagram.com/yourpage" target="_blank">اینستاگرام</a> |
+  <a href="https://t.me/yourchannel" target="_blank">تلگرام</a> |
+  <a href="https://wa.me/yourNumber" target="_blank">واتساپ</a> |
+  <a href="https://yourformlink.com" target="_blank">اشتراک پرسشنامه</a>
+</div>
+
+
     </form>
 
-    <div id="resultBox" class="result" style="display:none"></div>
-    <div style="margin-top:10px">
-      <button id="downloadBtn" style="display:none">دانلود PDF نتیجه</button>
-    </div>
+    <div id="resultArea" class="result hide">
+      <h2 style="color:var(--accent)">نتایج شما</h2>
+      <div id="meta" style="color:var(--muted)"></div>
 
-    <p class="muted" style="margin-top:12px">توجه: فرم به آدرس Web App ارسال می‌شود و همزمان نتیجه برای شما نمایش داده می‌شود. اگر ارسال به شیت با خطا مواجه شد، نتیجه به‌صورت محلی نمایش داده می‌شود.</p>
+      <h3 style="margin-top:12px">خرده‌مقیاس‌ها (سبک سازنده)</h3>
+      <div id="constructiveTable"></div>
+
+      <h3 style="margin-top:12px">خرده‌مقیاس‌ها (سبک مخرب)</h3>
+      <div id="destructiveTable"></div>
+
+      <div class="charts" style="margin-top:12px">
+        <div>
+          <h4 style="color:var(--accent)">نمودار سبک سازنده</h4>
+          <canvas id="chartConstructive"></canvas>
+        </div>
+        <div>
+          <h4 style="color:var(--accent2)">نمودار سبک مخرب</h4>
+          <canvas id="chartDestructive"></canvas>
+        </div>
+      </div>
+
+      <h3 style="margin-top:14px">خلاصه کلی</h3>
+      <div id="summaryTable"></div>
+      <div class="charts" style="margin-top:8px">
+        <div>
+          <h4 style="color:var(--purple)">مقایسه سبک‌ها (سازنده vs مخرب)</h4>
+          <canvas id="chartOverall"></canvas>
+        </div>
+        <div>
+          <h4 style="color:var(--yellow)">نمره کلی</h4>
+          <canvas id="chartTotal"></canvas>
+        </div>
+      </div>
+
+      <h3 style="margin-top:12px">توصیه‌های کوتاه هر خرده‌مقیاس</h3>
+      <div id="recommendations"></div>
+
+      <div style="margin-top:14px">
+        <button id="downloadPdfBtn">دانلود PDF گزارش</button>
+        <button id="downloadXlsBtn">دانلود اکسل (XLSX)</button>
+      </div>
+
+      <div class="social" style="margin-top:18px">
+        <p>👏 تبریک! شما یک گام مهم برای شناخت و رشد شخصی برداشتید.<br>
+        💡 برای یادگیری، رشد و تجربه کردن با من همراه شوید:</p>
+        <p>اینستاگرام: <a href="https://www.instagram.com/drsomayeazad?utm_source=qr&igsh=dWRoeHNzaHdwOWJz" target="_blank">@drsomayeazad</a></p>
+        <p>تلگرام: <a href="https://t.me/DonyayeMatloob_1" target="_blank">@DonyayeMatloob_1</a></p>
+        <p>ایتا: <a href="https://eitaa.com/donyayematloob" target="_blank">@donyayematloob</a></p>
+
+        <div class="qrwrap" style="margin-top:10px">
+          <div>
+            <img src="https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=https%3A%2F%2Fwww.instagram.com%2Fdrsomayeazad%3Futm_source%3Dqr%26igsh%3DdWRoeHNzaHdwOWJz" alt="QR اینستا"><br>
+            <small>اینستاگرام</small>
+          </div>
+          <div>
+            <img src="https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=https%3A%2F%2Ft.me%2FDonyayeMatloob_1" alt="QR تلگرام"><br>
+            <small>تلگرام</small>
+          </div>
+          <div>
+            <img src="https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=https%3A%2F%2Feitaa.com%2Fdonyayematloob" alt="QR ایتا"><br>
+            <small>ایتا</small>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;font-size:13px;color:#444;text-align:center">
+        منبع اعتبارسنجی پرسشنامه: آزاد سمیه، اخوان تفتی مهناز، محسن پور مریم. ساخت و روایی آزمایی پرسشنامه سبکهای فرزندپروری آموزشی بر پایه تئوری انتخاب گلاسر . فصلنامه علمی- پژوهشی خانواده و پژوهش. ۱۳۹۹; ۱۷ (۲) :۱۱۹-۱۴۶<br>
+        URL: <a href="http://qjfr.ir/article-۱-۱۵۰۳-fa.html" target="_blank">http://qjfr.ir/article-۱-۱۵۰۳-fa.html</a>
+      </div>
+    </div>
   </div>
 
-  <!-- کتابخانه‌ها برای تولید PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- کتابخانه‌ها -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-  <script>
-  // ---------- تنظیم: WEB APP URL شما (همان که دادی) ----------
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwRaIL9Qy2yHrdIhzMTB0RKE3PivbUgac3ZfyUzBCTkPJT2homKJ_C-jfcSeSrNZ41Dug/exec";
-
-  // ---------- 40 سؤال (ASCII quotes, UTF-8 file) ----------
-  const questions = [
+<script>
+// ================== داده‌ها و تنظیمات ==================
+const questions = [
 "در صورت بروز رفتار اشتباهی از فرزندم به او اطمینان می دهم که جدای از رفتارش او برای من ارزشمند است.",
 "به فرزندم در مسائل شخصی اش مثل روابط اجتماعی و تحصیلی ...اعتماد دارم.",
-"وقتی فرزندم را با فرزند دیگران مقایسه می کنم و احساس می کنم به خوبی فرزندان دیگران نیست، این احساسات را به فرزندم منتقل می کنم.",
-"وقتی فرزندم در کاری شکست می خورد، سعی می کنم او را آرام کنم.",
-"در شرایطی که فرزندم خواسته ی مطلوبم را انجام دهد، به او بیشتر محبت یا توجه می کنم.",
-"هنگامی که فرزندم در مسائلی نظر متفاوتی از نظر من دارد، با کمال آرامش به نظرات او توجه می کنم.",
+"وقتی فرزندم را با فرزند دیگران مقایسه می کنم و احساس می کنم به خوبی فرزندان دیگران نیست ، این احساسات را به فرزندم منتقل می کنم .",
+"وقتی فرزندم در کاری شکست می خورد ، سعی می کنم او را آرام کنم .",
+"در شرایطی که فرزندم خواسته ی مطلوبم را انجام دهد ، به او بیشتر محبت یا توجه می کنم",
+"هنگامی که فرزندم در مسائلی نظر متفاوتی از نظر من دارد، با کمال آرامش به نظرات او توجه می کنم .",
 "به فرزندم توضیح می دهم که چرا باید از قوانین پیروی کند.",
-"به فرزندم هشدار می دهم که اگر به تقاضای من عمل نکند خواسته هایش را برآورده نخواهم کرد.",
-"به فرزندم می گویم که اگر خواهان رفتارهای مطلوبی از طرف من است، در عوض باید خواسته هایم را اجابت کند.",
+"به فرزندم هشدار می دهم که اگر به تقاضای من عمل نکند خواسته هایش را برآورده نخواهم کرد .",
+"به فرزندم می گویم که اگر خواهان رفتارهای مطلوبی از طرف من است ، در عوض باید خواسته هایم را اجابت کند.",
 "وقتی فرزندم با احترام با دیگران برخورد می کند او را تحسین می کنم.",
-"فرزندم می تواند هنگام خرید به سلیقه خودش هر چیز را انتخاب کند.",
-"وقتی فرزندم در تکالیف و کارهایش موفق می شود او را تحسین می کنم.",
+"فرزندم می تواند هنگام خرید به سلیقه خودش هر چیز را انتخاب کند .",
+"وقتی فرزندم در تکالیف و کارهایش موفق می شود او را تحسین می کنم .",
 "اگر رابطه فرزندم با دوستانش مورد تایید من نباشد از او ایراد می گیرم.",
-"از عملکرد تحصیلی فرزندم گلایه می کنم.",
-"فرزندم را تهدید می کنم که اگر خواسته ام را عملی نکند، پیامدهای بدی متوجه اوست.",
-"نارضایتی از شخصیت فرزندم را برایش بازگو می کنم.",
+"از عملکرد تحصیلی فرزندم گلایه می کنم .",
+"فرزندم را تهدید می کنم که اگر خواسته ام را عملی نکند ، پیامدهای بدی متوجه اوست.",
+"نارضایتی از شخصیت فرزندم را برایش بازگو می کنم .",
 "حتی وقتی مخالف خواسته یا کار فرزندم هستم او را تشویق می کنم تا حرفش را بزند.",
-"سعی می کنم کوچکترین رفتارهای مثبت فرزندم را تحسین کنم.",
+"سعی می کنم کوچکترین رفتارهای مثبت فرزندم را تحسین کنم .",
 "به طور مرتب به فرزندم یادآوری می کنم که وظایف و تکالیفش را فراموش نکند.",
 "یکی از برنامه های طبیعی خانه ما گفتگوهای دوستانه خانوادگی است.",
-"قبل از اینکه از فرزندم بخواهم کاری انجام دهد به میل و خواسته او نیز توجه می کنم.",
-"فرزندم را بابت اینکه مانند همسالانش قادر نیست از عهده وظایفش برآید سرزش می کنم.",
-"حتی وقتی فرزندم صحبتهایی که می کند به نظرم ارزش چندانی ندارد با این حال به صحبتهایش توجه می کنم.",
-"زمانی که فرزندم با من اختلاف نظر دارد با احترام با او برخورد می کنم.",
-"به فرزندم می گویم که در مورد کارهای خوب یا بد او چگونه فکر می کنم و چه احساسی دارم.",
+"قبل از اینکه از فرزندم بخواهم کاری انجام دهد به میل و خواسته او نیز توجه می کنم .",
+"فرزندم را بابت اینکه مانند همسالانش قادر نیست از عهده وظایفش برآید سرزش می کنم .",
+"حتی وقتی فرزندم صحبتهایی که می کند به نظرم ارزش چندانی ندارد با این حال به صحبتهایش توجه می کنم .",
+"زمانی که فرزندم با من اختلاف نظر دارد با احترام با او برخورد می کنم .",
+"به فرزندم می گویم که در مورد کارهای خوب یا بد او چگونه فکر می کنم و چه احساسی دارم .",
 "اگر نحوه رفتار فرزندم خوشایندم نباشد از او انتقاد می کنم.",
-"اگر وضع ظاهری و پوشش فرزندم خوشایند من نباشد، از او انتقاد می کنم.",
+"اگر وضع ظاهری و پوشش فرزندم خوشایند من نباشد ، از او انتقاد می کنم .",
 "وقتی به فرزندم ابراز علاقه و محبت می کنم که او مطابق میل من عمل کند.",
 "اجازه می دهم تا فرزندم در قوانین و مقررات خانواده دخالت کند و نظر دهد.",
-"وقتی فرزندم از دوستانش برایم تعریف می کند حتی اگر دوستانش مورد تایید من نباشند همچنان با توجه به حرفهایش گوش می دهم.",
-"فرزندم را مرتب بابت اشتباهاتش سرزنش می کنم.",
+"وقتی فرزندم از دوستانش برایم تعریف می کند حتی اگر دوستاش مورد تایید من نباشند همچنان با توجه به حرفهایش گوش می دهم .",
+"فرزندم را مرتب بابت اشتباهاتش سرزنش می کنم .",
 "اوقات گرم و صمیمی ای با فرزندم دارم.",
-"در مشکلاتی که با فرزندم دارم، سعی می کنم برای حل مشکل در وقت مناسب با او به گفتگو بپردازم.",
+"در مشکلاتی که با فرزندم دارم ، سعی می کنم برای حل مشکل در وقت مناسب با او به گفتگو بپردازم .",
 "وقتی فرزندم می خواهد دوستانش را به منزل دعوت کند با او همراهی می کنم.",
 "دائم به فرزندم می گویم که حرف مرا گوش نمی کند.",
-"اگر نحوه صحبت کردن فرزندم را دوست نداشته باشم از او ایراد می گیرم.",
-"وقتی فرزندم کار نادرست یا اشتباهی انجام دهد تا مدتی آن را به رخش می کشم.",
-"به فرزندم در مورد پیامد و نتیجه کارهایش توضیح می دهم.",
-"هنگام مشاجره با فرزندم، او را تهدید به محرومیت از بعضی امکاناتش می کنم.",
+"اگر نحوه صحبت کردن فرزندم را دوست نداشته باشم از او ایراد می گیرم .",
+"وقتی فرزندم کار نادرست یا اشتباهی انجام دهد تا مدتی آن را به رخش می کشم .",
+"به فرزندم در مورد پیامد و نتیجه کارهایش توضیح می دهم .",
+"هنگام مشاجره با فرزندم ، او را تهدید به محرومیت از بعضی امکاناتش می کنم .",
 "برای تنبیه فرزندم اجازه نمی دهم کار مورد علاقه اش را انجام دهد یا از وسایل مورد علاقه اش استفاده کند."
-  ];
+];
 
-  const optionLabels = ["همیشه","اغلب اوقات","گاهی اوقات","به ندرت","هرگز"];
-  const optionValues = [4,3,2,1,0];
+const optionLabels = ["همیشه","اغلب اوقات","گاهی اوقات","به ندرت","هرگز"];
+const optionValues = [4,3,2,1,0];
 
-  // Render questions (safe, no smart quotes)
-  const qContainer = document.getElementById('questions');
-  questions.forEach((text, idx) => {
-    const num = idx+1;
-    const qDiv = document.createElement('div');
-    qDiv.className = 'question';
-    let inner = `<div style="font-weight:600;margin-bottom:6px">سوال ${num}:</div><div style="margin-bottom:6px">${text}</div><div class="options">`;
-    optionLabels.forEach((lab,i)=>{
-      // make first radio required to enforce selection per group via simple JS validation below (we'll validate anyway)
-      inner += `<label style="margin-left:10px"><input type="radio" name="q${num}" value="${optionValues[i]}"> ${lab}</label>`;
-    });
-    inner += `</div>`;
-    qDiv.innerHTML = inner;
-    qContainer.appendChild(qDiv);
+// نمایش سوالات
+const qContainer = document.getElementById('questions');
+questions.forEach((text,i)=>{
+  const div=document.createElement('div');
+  div.className='question';
+  let html=`<div class="qtext">سوال ${i+1}</div><div style="font-weight:500;margin-bottom:8px">${text}</div><div class="options">`;
+  optionLabels.forEach((lab,j)=>{
+    // required on first radio group will be validated via JS submit check
+    html += `<label><input type="radio" name="q${i+1}" value="${optionValues[j]}"> ${lab}</label>`;
   });
+  html += `</div>`;
+  div.innerHTML=html;
+  qContainer.appendChild(div);
+});
 
-  // Subscale definitions (question numbers are 1-based)
-  const subscales = {
-    "حمایت کردن": [1,4,17],
-    "دلگرمی دادن": [10,12,18,32],
-    "گوش دادن": [23,30],
-    "پذیرفتن": [6,11,29,34],
-    "اعتماد کردن": [2],
-    "احترام گذاشتن": [21,24],
-    "گفتگوکردن": [7,20,25,33,38],
-    "انتقاد کردن": [13,26,27,36],
-    "سرزنش کردن": [22,31],
-    "شکایت و گلایه کردن": [3,14,16],
-    "غر و نق زدن": [19,35,37],
-    "تهدیدکردن": [8,15,39],
-    "تنبیه کردن": [40],
-    "مهار از طریق رشوه (باج دادن)": [5,9,28]
-  };
+// زیرمقیاس‌ها
+const constructive = {
+  "حمایت کردن":[1,4,17],
+  "دلگرمی دادن":[10,12,18,32],
+  "گوش دادن":[23,30],
+  "پذیرفتن":[6,11,29,34],
+  "اعتماد کردن":[2],
+  "احترام گذاشتن":[21,24],
+  "گفتگوکردن":[7,20,25,33,38]
+};
+const destructive = {
+  "انتقاد کردن":[13,26,27,36],
+  "سرزنش کردن":[22,31],
+  "شکایت و گلایه کردن":[3,14,16],
+  "غر و نق زدن":[19,35,37],
+  "تهدیدکردن":[8,15,39],
+  "تنبیه کردن":[40],
+  "مهار از طریق رشوه (باج دادن)":[5,9,28]
+};
 
-  // Utility: validate all q answered
-  function validateAllAnswers(){
-    for(let i=1;i<=40;i++){
-      const checked = document.querySelector(`input[name="q${i}"]:checked`);
-      if(!checked) return i; // return first missing question index
-    }
-    return 0;
+const recommendationsText = {
+  "حمایت کردن":"به فرزندتان نشان دهید که او را دوست دارید و ارزشمند می‌دانید، حتی وقتی اشتباه می‌کند؛ محبت بی‌قید و شرط موثر است.",
+  "دلگرمی دادن":"موارد موفقیت‌های کوچک را بزرگ کنید، برای رفتارهای مثبت تحسین و بازخورد فوری بدهید.",
+  "گوش دادن":"هنگام صحبت فرزند، قطع نکنید، گوش بدهید و احساساتش را بازتاب دهید تا اعتماد ساخته شود.",
+  "پذیرفتن":"اختلاف نظر را طبیعی بدانید و سعی کنید رفتار و شخصیت او را بپذیرید، محدودیت‌گذاری همراه با توضیح مفید است.",
+  "اعتماد کردن":"به او فرصت مسئولیت دادن و اعتماد نشان دهید؛ این باعث خودباوری و رشد می‌شود.",
+  "احترام گذاشتن":"با احترام به نظرات او پاسخ دهید و از سرزنش عمومی خودداری کنید.",
+  "گفتگوکردن":"قوانین را با گفتگوی دوطرفه توضیح دهید و در تصمیم‌گیری‌های متناسب مشارکت دهید.",
+  "انتقاد کردن":"از انتقاد شخصی خودداری کنید، به‌جای آن روی رفتار مشخص و قابل تغییر تمرکز کنید.",
+  "سرزنش کردن":"به‌جای سرزنش، روی راه‌حل و آموزش تمرکز کنید؛ سرزنش انگیزه را کاهش می‌دهد.",
+  "شکایت و گلایه کردن":"از بیان مداوم گلایه‌ها خودداری کنید و موارد مثبت را برجسته کنید.",
+  "غر و نق زدن":"برای یادآوری‌ها از روش‌های مثبت و سیستم‌های تشویقی استفاده کنید تا پرخاش کاهش یابد.",
+  "تهدیدکردن":"تهدید دائمی باعث ترس و مقاومت می‌شود؛ بهتر است مرزها را واضح و سازنده تعیین کنید.",
+  "تنبیه کردن":"تنبیه به‌تنهایی اثربخش نیست؛ پیامدهای منطقی و همراه با آموزش مفیدترند.",
+  "مهار از طریق رشوه (باج دادن)":"از دادن پاداش‌های موقتی برای کنترل رفتار جلوگیری کنید؛ انگیزه‌های درونی را تقویت کنید."
+};
+
+// رنگ‌ها
+const paletteConstructive = ['#0b67b2','#ff8a00','#7b1fa2','#2e7d32','#1e88e5','#ffb74d','#9c27b0'];
+const paletteDestructive = ['#d32f2f','#f57c00','#6a1b9a','#c62828','#fb8c00','#ab47bc','#e65100'];
+
+// توابع
+function escapeHtml(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function sumArray(arr){ return arr.reduce((a,b)=>a+b,0); }
+
+function computeSubscaleScores(data){
+  const consScores = {};
+  for(const [name, arr] of Object.entries(constructive)){
+    let s=0; arr.forEach(q=>{ s += parseInt(data['q'+q] || 0); });
+    consScores[name] = {sum:s, max: arr.length*4, pct: arr.length? Math.round((s/(arr.length*4))*100) : 0};
   }
-
-  // Calculate scores
-  function calculateResults(data){
-    const results = {};
-    for(const [name, arr] of Object.entries(subscales)){
-      let sum = 0;
-      arr.forEach(qnum => {
-        const v = parseInt(data[`q${qnum}`]);
-        if(!isNaN(v)) sum += v;
-      });
-      const max = arr.length * 4;
-      const pct = max>0 ? Math.round((sum / max) * 100) : 0;
-      results[name] = {sum, max, pct};
-    }
-    // totals
-    const constructiveKeys = ["حمایت کردن","دلگرمی دادن","گوش دادن","پذیرفتن","اعتماد کردن","احترام گذاشتن","گفتگوکردن"];
-    const destructiveKeys = ["انتقاد کردن","سرزنش کردن","شکایت و گلایه کردن","غر و نق زدن","تهدیدکردن","تنبیه کردن","مهار از طریق رشوه (باج دادن)"];
-    let consTotal=0, consMax=0;
-    constructiveKeys.forEach(k=>{ consTotal += results[k].sum; consMax += results[k].max; });
-    let desTotal=0, desMax=0;
-    destructiveKeys.forEach(k=>{ desTotal += results[k].sum; desMax += results[k].max; });
-
-    return {results, consTotal, consMax, desTotal, desMax};
+  const desScores = {};
+  for(const [name, arr] of Object.entries(destructive)){
+    let s=0; arr.forEach(q=>{ s += parseInt(data['q'+q] || 0); });
+    desScores[name] = {sum:s, max: arr.length*4, pct: arr.length? Math.round((s/(arr.length*4))*100) : 0};
   }
+  const consTotal = sumArray(Object.values(consScores).map(o=>o.sum));
+  const consMax = sumArray(Object.values(consScores).map(o=>o.max));
+  const desTotal = sumArray(Object.values(desScores).map(o=>o.sum));
+  const desMax = sumArray(Object.values(desScores).map(o=>o.max));
+  return {consScores, desScores, consTotal, consMax, desTotal, desMax};
+}
 
-  // Show results HTML
-  function renderResults(data){
-    const calc = calculateResults(data);
-    const rs = calc.results;
-    let html = `<h3>نتایج شما</h3>`;
-    html += `<h4>مشخصات</h4><table><tr><th>نام</th><th>جنسیت</th><th>سن</th><th>تحصیلات</th></tr>`;
-    html += `<tr><td>${escapeHtml(data.name||"")}</td><td>${escapeHtml(data.gender||"")}</td><td>${escapeHtml(data.age||"")}</td><td>${escapeHtml(data.education||"")}</td></tr></table>`;
-
-    html += `<h4 style="margin-top:12px">سبک سازنده</h4><table><thead><tr><th>بعد</th><th>نمره شما</th><th>بیشترین نمره</th><th>درصد</th></tr></thead><tbody>`;
-    const constructiveOrder = ["حمایت کردن","دلگرمی دادن","گوش دادن","پذیرفتن","اعتماد کردن","احترام گذاشتن","گفتگوکردن"];
-    constructiveOrder.forEach(k=>{
-      html += `<tr><td>${k}</td><td>${rs[k].sum}</td><td>${rs[k].max}</td><td>${rs[k].pct}%</td></tr>`;
-    });
-    html += `</tbody></table>`;
-    html += `<p style="margin-top:8px">جمع سبک سازنده: ${calc.consTotal} از ${calc.consMax} — ${Math.round((calc.consTotal/calc.consMax)*100)}%</p>`;
-
-    html += `<h4 style="margin-top:12px">سبک مخرب</h4><table><thead><tr><th>بعد</th><th>نمره شما</th><th>بیشترین نمره</th><th>درصد</th></tr></thead><tbody>`;
-    const destructiveOrder = ["انتقاد کردن","سرزنش کردن","شکایت و گلایه کردن","غر و نق زدن","تهدیدکردن","تنبیه کردن","مهار از طریق رشوه (باج دادن)"];
-    destructiveOrder.forEach(k=>{
-      html += `<tr><td>${k}</td><td>${rs[k].sum}</td><td>${rs[k].max}</td><td>${rs[k].pct}%</td></tr>`;
-    });
-    html += `</tbody></table>`;
-    html += `<p style="margin-top:8px">جمع سبک مخرب: ${calc.desTotal} از ${calc.desMax} — ${Math.round((calc.desTotal/calc.desMax)*100)}%</p>`;
-
-    // optional: list question-by-question answers
-    html += `<h4 style="margin-top:12px">پاسخ‌های شما</h4><table><thead><tr><th>شماره</th><th>پرسش</th><th>پاسخ (نمره)</th></tr></thead><tbody>`;
-    for(let i=1;i<=40;i++){
-      const text = questions[i-1];
-      const val = data[`q${i}`] ?? "";
-      html += `<tr><td>${i}</td><td style="text-align:left">${escapeHtml(text)}</td><td>${val}</td></tr>`;
-    }
-    html += `</tbody></table>`;
-
-    const resultBox = document.getElementById('resultBox');
-    resultBox.innerHTML = html;
-    resultBox.style.display = 'block';
-    document.getElementById('downloadBtn').style.display = 'inline-block';
+function renderSubscaleTable(containerId, scores){
+  let html = `<table><thead><tr><th>بعد</th><th>نمره شما</th><th>بیشترین نمره</th><th>درصد</th></tr></thead><tbody>`;
+  for(const [k,v] of Object.entries(scores)){
+    html += `<tr><td style="text-align:left">${escapeHtml(k)}</td><td>${v.sum}</td><td>${v.max}</td><td>${v.pct}%</td></tr>`;
   }
+  html += `</tbody></table>`;
+  document.getElementById(containerId).innerHTML = html;
+}
 
-  // escape for safety
-  function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function renderRecommendations(scores){
+  const wrap = document.getElementById('recommendations');
+  wrap.innerHTML = '';
+  for(const [k,v] of Object.entries(scores)){
+    const div = document.createElement('div');
+    div.className = 'recommend';
+    div.innerHTML = `<strong>${escapeHtml(k)} — نمره: ${v.sum}/${v.max} (${v.pct}%)</strong>
+      <p style="margin:6px 0">${escapeHtml(recommendationsText[k] || "توصیه‌ای موجود نیست.")}</p>`;
+    wrap.appendChild(div);
+  }
+}
 
-  // submit handler
-  document.getElementById('surveyForm').addEventListener('submit', async function(evt){
-    evt.preventDefault();
-    document.getElementById('status').textContent = '';
-    const missing = validateAllAnswers();
-    if(missing){
-      alert('لطفاً همه سؤالات را پاسخ دهید. سوال شماره ' + missing + ' پاسخ داده نشده است.');
+// نمودارها
+let chartCons=null, chartDes=null, chartOverall=null, chartTotal=null;
+function drawBarChart(ctxId, labels, data, colors){
+  const ctx = document.getElementById(ctxId).getContext('2d');
+  return new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[{ data, backgroundColor: colors }] },
+    options:{ responsive:true, scales:{ y:{ beginAtZero:true } }, plugins:{ legend:{ display:false } } }
+  });
+}
+
+// پردازش فرم
+document.getElementById('surveyForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  document.getElementById('status').textContent='';
+
+  // اعتبارسنجی: همه سوالات باید انتخاب شده باشند
+  for(let i=1;i<=40;i++){
+    if(!document.querySelector(`input[name="q${i}"]:checked`)){
+      document.getElementById('status').textContent = `لطفاً همه سؤالات را پاسخ دهید. سوال ${i} پاسخ داده نشده.`;
+      window.scrollTo({top:0,behavior:'smooth'});
       return;
     }
+  }
 
-    const fd = new FormData(this);
-    const data = {};
-    fd.forEach((v,k)=> data[k] = v);
+  // جمع‌آوری داده‌ها
+  const fd = new FormData(this);
+  const data = {};
+  fd.forEach((v,k)=> data[k]=v);
 
-    // show results immediately (local)
-    try{
-      renderResults(data);
-    }catch(e){
-      console.error('خطا در نمایش نتیجه:', e);
-      alert('خطا در محاسبه نتیجه (کنسول را بررسی کنید).');
-    }
+  // محاسبات
+  const {consScores, desScores, consTotal, consMax, desTotal, desMax} = computeSubscaleScores(data);
 
-    // try send to Google Apps Script (JSON)
-    try {
-      const res = await fetch(WEB_APP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) {
-        console.warn('response not ok', res.status, res.statusText);
-        document.getElementById('status').innerHTML = '<span class="error">ارسال به شیت ناموفق بود (کد ' + res.status + '). لطفاً تنظیمات Web App را بررسی کنید.</span>';
-      } else {
-        // try parse json (Apps Script may return JSON or text)
-        try {
-          const j = await res.json();
-          console.log('WebApp response', j);
-        } catch(e){
-          console.log('WebApp returned non-JSON OK response');
-        }
-        document.getElementById('status').innerHTML = '<span style="color:green">پاسخ با موفقیت به شیت ارسال شد.</span>';
-      }
-    } catch(err) {
-      // network / CORS / 401 ...
-      console.error('send error', err);
-      document.getElementById('status').innerHTML = `<span class="error">ارسال به شیت انجام نشد: ${escapeHtml(String(err))}</span><br>
-      <small class="muted">راهنما: اگر این خطا را مشاهده می‌کنید، لطفاً در Google Apps Script > Deploy > Web app بررسی کنید: <br>
-      • Execute as = Me<br>• Who has access = Anyone (even anonymous)</small>`;
-    }
+  // نمایش مشخصات
+  const meta = document.getElementById('meta');
+  const name = data.name || '—';
+  const gender = data.gender || '—';
+  const age = data.age || '—';
+  const education = data.education || '—';
+  meta.innerHTML = `<strong>مشخصات:</strong> نام: ${escapeHtml(name)} — جنسیت: ${escapeHtml(gender)} — سن: ${escapeHtml(age)} — تحصیلات: ${escapeHtml(education)}`;
+
+  // جدول‌ها و توصیه‌ها
+  renderSubscaleTable('constructiveTable', consScores);
+  renderSubscaleTable('destructiveTable', desScores);
+  renderRecommendations({...consScores, ...desScores});
+
+  // نمودار سازنده
+  if(chartCons) chartCons.destroy();
+  const consLabels = Object.keys(consScores);
+  const consData = Object.values(consScores).map(o=>o.sum);
+  chartCons = drawBarChart('chartConstructive', consLabels, consData, paletteConstructive.slice(0,consLabels.length));
+
+  // نمودار مخرب
+  if(chartDes) chartDes.destroy();
+  const desLabels = Object.keys(desScores);
+  const desData = Object.values(desScores).map(o=>o.sum);
+  chartDes = drawBarChart('chartDestructive', desLabels, desData, paletteDestructive.slice(0,desLabels.length));
+
+  // نمودار کلی مقایسه
+  if(chartOverall) chartOverall.destroy();
+  chartOverall = new Chart(document.getElementById('chartOverall').getContext('2d'), {
+    type:'bar',
+    data:{ labels:['سبک سازنده','سبک مخرب'], datasets:[{ data:[consTotal, desTotal], backgroundColor:['rgba(11,103,178,0.9)','rgba(211,47,47,0.9)'] }] },
+    options:{ responsive:true, scales:{ y:{ beginAtZero:true } }, plugins:{ legend:{display:false} } }
   });
 
-  // download PDF (capture resultBox)
-  document.getElementById('downloadBtn').addEventListener('click', async function(){
-    const btn = this;
-    btn.disabled = true;
-    btn.textContent = 'در حال ساخت PDF...';
-    const el = document.getElementById('resultBox');
-
-    try {
-      const canvas = await html2canvas(el, { scale: 2, useCORS: true });
-      const imgData = canvas.toDataURL('image/png');
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF('p','mm','a4');
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgProps = pdf.getImageProperties(imgData);
-      const imgWidth = pageWidth - 20; // margins
-      const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-      let position = 10;
-      if(imgHeight <= pageHeight - 20){
-        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-      } else {
-        // if long, split into pages by drawing full-size and adding pages
-        let heightLeft = imgHeight;
-        let y = 0;
-        while(heightLeft > 0){
-          pdf.addImage(imgData, 'PNG', 10, position - y, imgWidth, imgHeight);
-          heightLeft -= (pageHeight - 20);
-          if(heightLeft > 0) pdf.addPage();
-          y += (pageHeight - 20);
-        }
-      }
-      pdf.save('نتایج_پرسشنامه.pdf');
-    } catch(err){
-      console.error('pdf error', err);
-      alert('خطا در ساخت PDF: ' + err);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'دانلود PDF';
-    }
+  // نمودار درصدی
+  if(chartTotal) chartTotal.destroy();
+  const pctCons = Math.round((consTotal/consMax)*100);
+  const pctDes = Math.round((desTotal/desMax)*100);
+  chartTotal = new Chart(document.getElementById('chartTotal').getContext('2d'), {
+    type:'doughnut',
+    data:{ labels:['سازنده','مخرب'], datasets:[{ data:[pctCons, pctDes], backgroundColor:['#1e88e5','#d32f2f'] }] },
+    options:{ responsive:true }
   });
 
-  // end script
-  </script>
+  // جدول خلاصه
+  const summaryHtml = `<table><thead><tr><th>بعد</th><th>نمره</th><th>بیشترین نمره</th><th>درصد</th></tr></thead>
+    <tbody>
+      <tr><td>جمع سبک سازنده</td><td>${consTotal}</td><td>${consMax}</td><td>${Math.round((consTotal/consMax)*100)}%</td></tr>
+      <tr><td>جمع سبک مخرب</td><td>${desTotal}</td><td>${desMax}</td><td>${Math.round((desTotal/desMax)*100)}%</td></tr>
+    </tbody></table>`;
+  document.getElementById('summaryTable').innerHTML = summaryHtml;
+
+  // نمایش نتیجه
+  document.getElementById('resultArea').classList.remove('hide');
+  setTimeout(()=>{ document.getElementById('resultArea').scrollIntoView({behavior:'smooth'}); },100);
+
+  // ذخیره گزارش برای دانلود
+  window._lastReport = { meta:{name,gender,age,education}, consScores, desScores, consTotal, consMax, desTotal, desMax, pctCons, pctDes };
+
+});
+
+// دانلود PDF
+document.getElementById('downloadPdfBtn').addEventListener('click', async function(){
+  const el = document.getElementById('resultArea');
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p','mm','a4');
+  const canvas = await html2canvas(el, { scale: 2, useCORS: true, logging:false });
+  const img = canvas.toDataURL('image/png');
+  const pageW = pdf.internal.pageSize.getWidth();
+  const pageH = pdf.internal.pageSize.getHeight();
+  const imgW = pageW - 20;
+  const imgH = (canvas.height * imgW) / canvas.width;
+  let pos = 10;
+  if(imgH <= pageH - 20){
+    pdf.addImage(img,'PNG',10,pos,imgW,imgH);
+  } else {
+    let heightLeft = imgH;
+    let y = 0;
+    while(heightLeft > 0){
+      pdf.addImage(img,'PNG',10,pos - y,imgW,imgH);
+      heightLeft -= (pageH - 20);
+      if(heightLeft > 0) pdf.addPage();
+      y += (pageH - 20);
+    }
+  }
+  pdf.save('گزارش_پرسشنامه.pdf');
+});
+
+// دانلود Excel
+document.getElementById('downloadXlsBtn').addEventListener('click', function(){
+  const report = window._lastReport;
+  if(!report){ alert('ابتدا فرم را ارسال کنید تا گزارش تولید شود.'); return; }
+
+  const wb = XLSX.utils.book_new();
+  const meta = [ ['فیلد','مقدار'], ['نام', report.meta.name], ['جنسیت', report.meta.gender], ['سن', report.meta.age], ['تحصیلات', report.meta.education], ['', ''] ];
+  const consHeader = ['خرده‌مقیاس_سازنده','نمره','بیشترین'];
+  const consRows = Object.entries(report.consScores).map(([k,v])=> [k, v.sum, v.max]);
+  const desHeader = ['خرده‌مقیاس_مخرب','نمره','بیشترین'];
+  const desRows = Object.entries(report.desScores).map(([k,v])=> [k, v.sum, v.max]);
+  const ws1Data = meta.concat([consHeader], consRows, [['','']], [desHeader], desRows, [['','']], [['جمع سازنده', report.consTotal, report.consMax], ['جمع مخرب', report.desTotal, report.desMax]]);
+  const ws1 = XLSX.utils.aoa_to_sheet(ws1Data);
+  XLSX.utils.book_append_sheet(wb, ws1, 'گزارش');
+  XLSX.writeFile(wb, 'گزارش_پرسشنامه.xlsx');
+});
+
+// پاک‌سازی فرم
+document.getElementById('resetBtn').addEventListener('click', function(){
+  if(confirm('می‌خواهید فرم پاک شود؟')){ document.getElementById('surveyForm').reset(); document.getElementById('resultArea').classList.add('hide'); window._lastReport = null; window.scrollTo({top:0,behavior:'smooth'}); }
+});
+
+// ===== اشتراک‌گذاری سریع =====
+const pageLink = window.location.href;
+function shareWhatsApp(){
+  const txt = `پرسشنامه سبک فرزندپروری — نتایج فوری: ${pageLink}`;
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`,'_blank');
+}
+function shareTelegram(){
+  const txt = `پرسشنامه سبک فرزندپروری — ${pageLink}`;
+  window.open(`https://t.me/share/url?url=${encodeURIComponent(pageLink)}&text=${encodeURIComponent('پیشنهاد می‌کنم این پرسشنامه را تکمیل کنید')}`,'_blank');
+}
+function shareInstagram(){
+  alert('برای اشتراک در اینستاگرام: لینک را کپی کنید و در استوری یا دایرکت قرار دهید.');
+}
+function copyLink(){
+  navigator.clipboard.writeText(pageLink).then(()=>{ document.getElementById('linkStatus').textContent = "لینک کپی شد!"; setTimeout(()=>{document.getElementById('linkStatus').textContent='';},2500); });
+}
+
+// ===== اشتراک‌گذاری نتایج متن (واتساپ) =====
+function shareResultsWhatsApp(){
+  const r = window._lastReport;
+  if(!r){ alert('ابتدا نتیجه را تولید کنید.'); return; }
+  const text = `نتایج پرسشنامه:\nجمع سبک سازنده: ${r.consTotal}/${r.consMax} (${r.pctCons}%)\nجمع سبک مخرب: ${r.desTotal}/${r.desMax} (${r.pctDes}%)\n${pageLink}`;
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`,'_blank');
+}
+
+// ===== محافظت ساده: جلوگیری از راست‌کلیک و کلیدهای توسعه‌دهنده =====
+document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+document.addEventListener('keydown', function(e){
+  if(e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 'Shift' || e.key === 'I' || e.key === 'i')) e.preventDefault();
+  if(e.key === 'F12') e.preventDefault();
+});
+
+</script>
+
+
+<style>
+/* رادیوباتون درشت، هم دسکتاپ هم موبایل */
+input[type="radio"] {
+  transform: scale(1.5); /* 1.5 برابر بزرگ‌تر */
+  margin: 5px; /* فاصله کمی برای زیبایی */
+  vertical-align: middle;
+}
+</style>
+
+
 </body>
 </html>
