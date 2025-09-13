@@ -81,8 +81,32 @@
   <a href="https://instagram.com/yourpage" target="_blank">اینستاگرام</a> |
   <a href="https://t.me/yourchannel" target="_blank">تلگرام</a> |
   <a href="https://wa.me/yourNumber" target="_blank">واتساپ</a> |
-  <a href="https://somayeazad121.github.io/parenting-survey/" target="_blank">اشتراک پرسشنامه</a>
-  </div>
+
+<a href="#" onclick="shareLink(event)">📤 اشتراک‌گذاری پرسشنامه</a>
+
+<script>
+function shareLink(e) {
+  e.preventDefault(); // جلوگیری از باز شدن لینک خالی
+
+  const url = "https://somayeazad121.github.io/parenting-survey/";
+  const title = "پرسشنامه سبک فرزندپروری";
+  const text = "بیاید این پرسشنامه رو پر کنید:";
+
+  if (navigator.share) {
+    navigator.share({
+      title: title,
+      text: text,
+      url: url
+    }).catch((error) => console.log("خطا در اشتراک‌گذاری:", error));
+  } else {
+    navigator.clipboard.writeText(url).then(() => {
+      alert("لینک پرسشنامه کپی شد ✅");
+    });
+  }
+}
+</script>
+
+   </div>
 </div>
 
 
