@@ -121,41 +121,42 @@ function shareLink(e) {
     <form id="surveyForm">
 
 
- <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin: 20px 0; font-family: Vazirmatn, sans-serif;">
+ <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin: 20px 0; font-family: Vazirmatn, sans-serif; align-items: center;">
 
   <!-- نام -->
-  <div style="display: flex; flex-direction: column; min-width: 120px;">
-    <label style="font-size: 12px; margin-bottom: 3px; color: #555;">نام:</label>
+  <div style="display: flex; align-items: center; gap: 5px; min-width: 120px;">
+    <label style="font-size: 13px; color: #555;">نام:</label>
     <input name="name" type="text" placeholder="اختیاری"
       style="font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid #ccc; width: 100%; transition: border 0.3s;">
   </div>
 
   <!-- جنسیت -->
-  <div style="display: flex; flex-direction: column; min-width: 90px;">
-    <label style="font-size: 12px; margin-bottom: 3px; color: #555;">جنسیت:</label>
+  <div style="display: flex; align-items: center; gap: 5px; min-width: 90px;">
+    <label style="font-size: 13px; color: #555;">جنسیت:</label>
     <select name="gender"
-      style="font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid #ccc; width: 100%; transition: border 0.3s;">
-      <option value="">اختیاری</option>
+      style="font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid #ccc; width: 100%; color: #555; transition: border 0.3s;">
+      <option value="" style="color: #999;">اختیاری</option>
       <option>زن</option>
       <option>مرد</option>
     </select>
   </div>
 
   <!-- سن -->
-  <div style="display: flex; flex-direction: column; min-width: 70px;">
-    <label style="font-size: 12px; margin-bottom: 3px; color: #555;">سن:</label>
+  <div style="display: flex; align-items: center; gap: 5px; min-width: 70px;">
+    <label style="font-size: 13px; color: #555;">سن:</label>
     <input name="age" type="number" min="0" placeholder="اختیاری"
-      style="font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid #ccc; width: 100%; transition: border 0.3s;">
+      style="font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid #ccc; width: 100%; transition: border 0.3s; color: #555;">
   </div>
 
   <!-- تحصیلات -->
-  <div style="display: flex; flex-direction: column; min-width: 120px;">
-    <label style="font-size: 12px; margin-bottom: 3px; color: #555;">تحصیلات:</label>
+  <div style="display: flex; align-items: center; gap: 5px; min-width: 120px;">
+    <label style="font-size: 13px; color: #555;">تحصیلات:</label>
     <input name="education" type="text" placeholder="اختیاری"
       style="font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid #ccc; width: 100%; transition: border 0.3s;">
   </div>
 
 </div>
+
 
 
 
