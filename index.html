@@ -78,8 +78,7 @@
 <div class="intro" style="background:#FFE4E1 ;padding:12px;border-radius:8px;margin-bottom:12px;text-align:center"> 
   <p style="margin:4px 0;color:#4d0033"> فرزندپروری آگاهانه و حمایتگر باعث رشد شخصیت و اعتمادبه‌نفس فرزندتان می‌شود. با پاسخ به این پرسشنامه می‌توانید سبک فرزندپروری خود را شناسایی و بهبود دهید. 
   </p> 
-  <p style="margin:4px 0;color:#4d0033">مناسب والدین دارای فرزند 6 تا 18 سال و حتی بالاتر 
-  </p> 
+  <p style="margin:4px 0;color:#4d0033"> مناسب والدین دارای فرزند 6 الی 18 و حتی بالاتر  </p>
   <p style="font-size:16px; color:#4d0033;">
 
   اگر این پرسشنامه برایتان مفید بود، با دنبال کردن من در شبکه‌های اجتماعی حمایتم کنید:
@@ -185,39 +184,13 @@ function shareLink(e) {
 <div class="invite-links" style="text-align:center; margin: 20px 0;">
   <p> برای اطلاعات بیشتر، شبکه‌های ما را دنبال کنید:</p>
 
- <div class="shareBtns" style="justify-content:center;margin-top:8px"> 
   <a href="https://instagram.com/drsomayeazad" target="_blank">اینستاگرام</a> |
   <a href="https://t.me/donyayematloob1" target="_blank">تلگرام</a> |
-   <a href=" https://eitaa.com/donyayematloob" target="_blank">ایتا</a> |
-    <a href="https://wa.me/989335556292" target="_blank">واتساپ</a> |
-<a href="#" onclick="shareLink(event)">📤 اشتراک‌گذاری پرسشنامه</a>
+  <a href="https://eitaa.com/donyayematloob" target="_blank">ایتا</a> |
+  <a href="https://wa.me/989335556292" target="_blank">واتساپ</a> |
+  <a href="#" onclick="shareLink(event)">📤 اشتراک‌گذاری پرسشنامه</a>
 
-<script>
-function shareLink(e) {
-  e.preventDefault(); // جلوگیری از باز شدن لینک خالی
-
-  const url = "https://somayeazad121.github.io/parenting-survey/";
-  const title = "پرسشنامه سبک فرزندپروری";
-  const text = "بیاید این پرسشنامه رو پر کنید:";
-
-  if (navigator.share) {
-    navigator.share({
-      title: title,
-      text: text,
-      url: url
-    }).catch((error) => console.log("خطا در اشتراک‌گذاری:", error));
-  } else {
-    navigator.clipboard.writeText(url).then(() => {
-      alert("لینک پرسشنامه کپی شد ✅");
-    });
-  }
-}
-</script>
-
-   </div>
-</div>
-
-
+ 
 <!-- QR Code -->
 <div class="invite-links" style="text-align:center; margin: 20px 0;">
   ...
