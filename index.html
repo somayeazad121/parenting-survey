@@ -119,19 +119,40 @@ function shareLink(e) {
     <p class="lead">مشخصات اختیاری است — می توانید فقط سوالات ۴۰گانه را پاسخ دهید. در پایان گزارش گرافیکی + PDF + Excel دریافت می‌کنید.</p>
 
     <form id="surveyForm">
-      <div class="flex" style="justify-content:space-between;align-items:center">
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-          <label>نام:</label><input name="name" type="text" placeholder="اختیاری">
-          <label>جنسیت:</label>
-            <select name="gender">
-              <option value="">اختیاری</option>
-              <option>زن</option>
-              <option>مرد</option>
-            </select>
-          <label>سن:</label><input name="age" type="number" min="0" placeholder="اختیاری">
-          <label>تحصیلات:</label><input name="education" type="text"  placeholder="اختیاری">
-        </div>
-      </div>
+      <div style="display: flex; justify-content: center; margin: 10px 0;">
+  <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; max-width: 100%;">
+    
+    <!-- نام -->
+    <div style="display: flex; flex-direction: column; flex: 1 1 120px; min-width: 100px;">
+      <label style="font-size: 12px;">نام:</label>
+      <input name="name" type="text" placeholder="اختیاری" style="font-size: 14px; padding: 5px; width: 100%;">
+    </div>
+    
+    <!-- جنسیت -->
+    <div style="display: flex; flex-direction: column; flex: 1 1 100px; min-width: 90px;">
+      <label style="font-size: 12px;">جنسیت:</label>
+      <select name="gender" style="font-size: 14px; padding: 5px; width: 100%;">
+        <option value="">اختیاری</option>
+        <option>زن</option>
+        <option>مرد</option>
+      </select>
+    </div>
+    
+    <!-- سن -->
+    <div style="display: flex; flex-direction: column; flex: 1 1 80px; min-width: 70px;">
+      <label style="font-size: 12px;">سن:</label>
+      <input name="age" type="number" min="0" placeholder="اختیاری" style="font-size: 14px; padding: 5px; width: 100%;">
+    </div>
+    
+    <!-- تحصیلات -->
+    <div style="display: flex; flex-direction: column; flex: 1 1 120px; min-width: 100px;">
+      <label style="font-size: 12px;">تحصیلات:</label>
+      <input name="education" type="text" placeholder="اختیاری" style="font-size: 14px; padding: 5px; width: 100%;">
+    </div>
+    
+  </div>
+</div>
+
 
       <hr style="margin-top:12px;border:none;border-top:1px solid #eef7f0">
 
