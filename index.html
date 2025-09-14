@@ -329,87 +329,9 @@ function shareLink(e) {
     colorDark: "#800080",   // رنگ بنفش
     colorLight: "#ffffff"   // پس‌زمینه سفید
   });
-  // نمونه تابع اشتراک‌گذاری پرسشنامه
-  function shareLink(event) {
-    event.preventDefault();
-    if (navigator.share) {
-      navigator.share({
-        title: 'پرسشنامه',
-        text: 'لینک پرسشنامه من:',
-        url: link
-      });
-    } else {
-      alert("مرورگر شما از اشتراک‌گذاری مستقیم پشتیبانی نمی‌کند. لینک: " + link);
-    }
-  }
-</script>
+  
 
-
-<div class="invite-links" style="text-align:center; margin: 20px 0;">
-  <p> برای اطلاعات بیشتر، شبکه‌های ما را دنبال کنید:</p>
-
-  <a href="https://instagram.com/drsomayeazad" target="_blank">اینستاگرام</a> |
-  <a href="https://t.me/donyayematloob1" target="_blank">تلگرام</a> |
-  <a href="https://eitaa.com/donyayematloob" target="_blank">ایتا</a> |
-  <a href="https://wa.me/989335556292" target="_blank">واتساپ</a> |
-  <a href="#" onclick="shareLink(event)">📤 اشتراک‌گذاری پرسشنامه</a>
-
- 
-<!-- QR Code -->
-<div class="invite-links" style="text-align:center; margin: 20px 0;">
-  ...
-  <div id="qrcode" style="display:inline-block; margin: 20px auto;"></div>
-  ...
-</div>
-
-
-
-  <!-- ایمیل -->
-
-<div class="email" style="margin-top:15px;">
-  ارسال پیام: 
-<a href="https://mail.google.com/mail/?view=cm&fs=1&to=drsomayeazad@gmail.com&su=درخواست%20اطلاعات&body=سلام%20دکتر%20عزیز،%20میخواستم%20در%20مورد%20..."
-     target="_blank">
-       drsomayeazad@gmail.com 📧
-  </a>
-</div>
-
- 
-<!-- کتابخانه qrcode.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-  // لینک لینکدونی‌تان را اینجا بگذارید
-  var link = "https://somayeazad121.github.io/links/"; 
-
-  new QRCode(document.getElementById("qrcode"), {
-    text: link,
-    width: 160,
-    height: 160,
-    colorDark: "#800080",   // رنگ بنفش
-    colorLight: "#ffffff"   // پس‌زمینه سفید
-  });
-
-  // نمونه تابع اشتراک‌گذاری پرسشنامه
-  function shareLink(event) {
-    event.preventDefault();
-    if (navigator.share) {
-      navigator.share({
-        title: 'پرسشنامه',
-        text: 'لینک پرسشنامه من:',
-        url: link
-      });
-    } else {
-      alert("مرورگر شما از اشتراک‌گذاری مستقیم پشتیبانی نمی‌کند. لینک: " + link);
-    }
-  }
-</script>
-
-
-
-
-
-
-
+  ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
         
 
       <div style="margin-top:18px;font-size:13px;color:#444;text-align:center">
