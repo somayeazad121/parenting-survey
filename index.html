@@ -138,23 +138,53 @@ function shareLink(e) {
         <div id="status" style="color:var(--danger);font-weight:600"></div>
       </div>
 
+ححححححححححححححححححححححححححح
 <div class="invite-links" style="text-align:center; margin: 20px 0;">
   <p> برای اطلاعات بیشتر، شبکه‌های ما را دنبال کنید:</p>
 
-
-
-
-
-  
   <a href="https://instagram.com/drsomayeazad" target="_blank">اینستاگرام</a> |
   <a href="https://t.me/donyayematloob1" target="_blank">تلگرام</a> |
-   <a href=" https://eitaa.com/donyayematloob" target="_blank">ایتا</a> |
-    <a href="https://wa.me/989335556292" target="_blank">واتساپ</a> |
-<a href="#" onclick="shareLink(event)">📤 اشتراک‌گذاری پرسشنامه</a>
+  <a href="https://eitaa.com/donyayematloob" target="_blank">ایتا</a> |
+  <a href="https://wa.me/989335556292" target="_blank">واتساپ</a> |
+  <a href="#" onclick="shareLink(event)">📤 اشتراک‌گذاری پرسشنامه</a>
 
- 
-  
+  <!-- QR Code -->
+  <div id="qrcode" style="margin:20px auto;"></div>
+
+  <!-- ایمیل -->
+  <div class="email" style="margin-top:15px;">
+   ایمیل: <a href="mailto:drsomayeazad@gmail.com">drsomayeazad@gmail.com</a>
+  </div>
 </div>
+
+<!-- کتابخانه qrcode.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // لینک لینکدونی‌تان را اینجا بگذارید
+  var link = "https://somayeazad121.github.io/links/"; 
+
+  new QRCode(document.getElementById("qrcode"), {
+    text: link,
+    width: 150,
+    height: 150
+  });
+
+  // نمونه تابع اشتراک‌گذاری پرسشنامه
+  function shareLink(event) {
+    event.preventDefault();
+    if (navigator.share) {
+      navigator.share({
+        title: 'پرسشنامه',
+        text: 'لینک پرسشنامه من:',
+        url: link
+      });
+    } else {
+      alert("مرورگر شما از اشتراک‌گذاری مستقیم پشتیبانی نمی‌کند. لینک: " + link);
+    }
+  }
+</script>
+
+
 
 
     </form>
