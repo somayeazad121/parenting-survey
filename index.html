@@ -590,21 +590,64 @@ document.getElementById('downloadPdfBtn').addEventListener('click', async functi
 
 
 // دانلود Excel
-document.getElementById('downloadXlsBtn').addEventListener('click', function(){
-  const report = window._lastReport;
-  if(!report){ alert('ابتدا فرم را ارسال کنید تا گزارش تولید شود.'); return; }
 
-  const wb = XLSX.utils.book_new();
-  const meta = [ ['فیلد','مقدار'], ['نام', report.meta.name], ['جنسیت', report.meta.gender], ['سن', report.meta.age], ['تحصیلات', report.meta.education], ['', ''] ];
-  const consHeader = ['خرده‌مقیاس_سازنده','نمره','بیشترین'];
-  const consRows = Object.entries(report.consScores).map(([k,v])=> [k, v.sum, v.max]);
-  const desHeader = ['خرده‌مقیاس_مخرب','نمره','بیشترین'];
-  const desRows = Object.entries(report.desScores).map(([k,v])=> [k, v.sum, v.max]);
-  const ws1Data = meta.concat([consHeader], consRows, [['','']], [desHeader], desRows, [['','']], [['جمع سازنده', report.consTotal, report.consMax], ['جمع مخرب', report.desTotal, report.desMax]]);
-  const ws1 = XLSX.utils.aoa_to_sheet(ws1Data);
-  XLSX.utils.book_append_sheet(wb, ws1, 'گزارش');
-  XLSX.writeFile(wb, 'گزارش_پرسشنامه.xlsx');
+
+document.getElementById("downloadXlsBtn").addEventListener("click", function () {
+  let wb = XLSX.utils.book_new();
+
+  // ======================
+  // 1) شیت اطلاعات کلی
+  // ======================
+  let info = [
+    ["پرسشنامه", " سبک‌های فرزندپروری"],
+       ["", ""],
+       ["", ""],
+    
+    ["نام", document.getElementById("name")?.value || "—"],
+    ["سن", document.getElementById("age")?.value || "—"],
+    ["جنس", document.getElementById("gender")?.value || "—"],
+    ["تحصیلات", document.getElementById("education")?.value || "—"],
+       ["", ""],
+       ["", ""],
+      ["پیام به دکتر آزاد (واتساپ)","09335556292"],
+    ["ایمیل دکتر آزاد ", "drsomayeazad@gmail.com"] // 👈 ایمیل خودت اینجا بذار
+  ];
+  let wsInfo = XLSX.utils.aoa_to_sheet(info);
+  XLSX.utils.book_append_sheet(wb, wsInfo, "اطلاعات");
+
+  // ======================
+  // 2) شیت سبک سازنده
+  // ======================
+  let constructive = document.querySelector("#constructiveTable table");
+  if (constructive) {
+    let ws1 = XLSX.utils.table_to_sheet(constructive);
+    XLSX.utils.book_append_sheet(wb, ws1, "سبک سازنده");
+  }
+
+  // ======================
+  // 3) شیت سبک مخرب
+  // ======================
+  let destructive = document.querySelector("#destructiveTable table");
+  if (destructive) {
+    let ws2 = XLSX.utils.table_to_sheet(destructive);
+    XLSX.utils.book_append_sheet(wb, ws2, "سبک مخرب");
+  }
+
+  // ======================
+  // 4) شیت خلاصه
+  // ======================
+  let summary = document.querySelector("#summaryTable table");
+  if (summary) {
+    let ws3 = XLSX.utils.table_to_sheet(summary);
+    XLSX.utils.book_append_sheet(wb, ws3, "خلاصه");
+  }
+
+  // ذخیره اکسل با نام یکتا
+  XLSX.writeFile(wb, "parenting-survey-results_" + Date.now() + ".xlsx");
 });
+
+
+
 
 // پاک‌سازی فرم
 document.getElementById('resetBtn').addEventListener('click', function(){
