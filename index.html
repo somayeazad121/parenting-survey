@@ -154,9 +154,9 @@ function shareLink(e) {
   <!-- ایمیل -->
 
 <div class="email" style="margin-top:15px;">
-  برای تماس: 
+  ارسال پیام: 
   <a href="https://mail.google.com/mail/?view=cm&fs=1&to=drsomayeazad@gmail.com&su=درخواست%20اطلاعات&body=سلام%20دکتر%20عزیز،%20میخواستم%20در%20مورد%20...">
-     ارسال ایمیل به drsomayeazad@gmail.com 📧
+     drsomayeazad@gmail.com 📧
   </a>
 </div>
 
@@ -169,8 +169,10 @@ function shareLink(e) {
 
   new QRCode(document.getElementById("qrcode"), {
     text: link,
-    width: 150,
-    height: 150
+    width: 160,
+    height: 160,
+    colorDark: "#800080",   // رنگ بنفش
+    colorLight: "#ffffff"   // پس‌زمینه سفید
   });
 
   // نمونه تابع اشتراک‌گذاری پرسشنامه
