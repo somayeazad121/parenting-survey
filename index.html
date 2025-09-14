@@ -548,31 +548,46 @@ document.getElementById('surveyForm').addEventListener('submit', function(e){
 });
 
 // دانلود PDF
-document.getElementById('downloadPdfBtn').addEventListener('click', async function(){
+
+
+document.getElementById('downloadPdfBtn').addEventListener('click', async function () {
   const el = document.getElementById('resultArea');
   const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF('p','mm','a4');
-  const canvas = await html2canvas(el, { scale: 2, useCORS: true, logging:false });
-  const img = canvas.toDataURL('image/png');
-  const pageW = pdf.internal.pageSize.getWidth();
-  const pageH = pdf.internal.pageSize.getHeight();
-  const imgW = pageW - 20;
-  const imgH = (canvas.height * imgW) / canvas.width;
-  let pos = 10;
-  if(imgH <= pageH - 20){
-    pdf.addImage(img,'PNG',10,pos,imgW,imgH);
-  } else {
+  const pdf = new jsPDF('p', 'mm', 'a4');
+
+  try {
+    const canvas = await html2canvas(el, { scale: 2, logging: false, useCORS: true });
+    const imgData = canvas.toDataURL('image/png');
+
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const imgW = pageW - 20; // حاشیه
+    const imgH = (canvas.height * imgW) / canvas.width;
+
+    let position = 10;
     let heightLeft = imgH;
-    let y = 0;
-    while(heightLeft > 0){
-      pdf.addImage(img,'PNG',10,pos - y,imgW,imgH);
-      heightLeft -= (pageH - 20);
-      if(heightLeft > 0) pdf.addPage();
-      y += (pageH - 20);
+
+    // صفحه اول
+    pdf.addImage(imgData, 'PNG', 10, position, imgW, imgH);
+    heightLeft -= pageH;
+
+    // صفحات بعدی
+    while (heightLeft > 0) {
+      pdf.addPage();
+      position = heightLeft - imgH + 10;
+      pdf.addImage(imgData, 'PNG', 10, position, imgW, imgH);
+      heightLeft -= pageH;
     }
+
+    pdf.save("report_" + Date.now() + ".pdf");
+  } catch (err) {
+    alert("خطا در ساخت PDF: " + err);
+    console.error(err);
   }
-  pdf.save('گزارش_پرسشنامه.pdf');
 });
+
+
+
 
 // دانلود Excel
 document.getElementById('downloadXlsBtn').addEventListener('click', function(){
